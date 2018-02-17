@@ -132,171 +132,171 @@ cp %{SOURCE8} upstream
 
 %build
 make onearth PREFIX=%{_prefix}
-cd src/mrfgen/
-gcc -O3 RGBApng2Palpng.c -o RGBApng2Palpng -lpng
-mkdir build
-cd build
-cmake \
-      -DCMAKE_INSTALL_PREFIX="%{_prefix}" \
-      -DWITH_GD=1 \
-      -DWITH_GIF=1 \
-      -DWITH_GDAL=1 \
-      -DWITH_OGR=1 \
-      -DWITH_GEOS=1 \
-      -DWITH_CAIRO=0 \
-      -DWITH_PROJ=1 \
-      -DWITH_KML=1 \
-      -DWITH_WMS=1 \
-      -DWITH_WFS=1 \
-      -DWITH_WCS=1 \
-      -DWITH_SOS=1 \
-      -DWITH_CLIENT_WMS=1 \
-      -DWITH_CLIENT_WFS=1 \
-      -DWITH_POSTGIS=0 \
-      -DWITH_CURL=1 \
-      -DWITH_LIBXML2=1 \
-      -DWITH_PHP=0 \
-      -DWITH_FRIBIDI=0 \
-      -DWITH_FCGI=0 \
-      -DWITH_THREAD_SAFETY=1 \
-      -DWITH_PYTHON=1 \
-      -DWITH_ICONV=1 \
-      -DWITH_HARFBUZZ=0 \
-      ..
-make %{?smp_flags}
+#cd src/mrfgen/
+#gcc -O3 RGBApng2Palpng.c -o RGBApng2Palpng -lpng
+#mkdir build
+#cd build
+#cmake \
+#      -DCMAKE_INSTALL_PREFIX="%{_prefix}" \
+#      -DWITH_GD=1 \
+#      -DWITH_GIF=1 \
+#      -DWITH_GDAL=1 \
+#      -DWITH_OGR=1 \
+#      -DWITH_GEOS=1 \
+#      -DWITH_CAIRO=0 \
+#      -DWITH_PROJ=1 \
+#      -DWITH_KML=1 \
+#      -DWITH_WMS=1 \
+#      -DWITH_WFS=1 \
+#      -DWITH_WCS=1 \
+#      -DWITH_SOS=1 \
+#      -DWITH_CLIENT_WMS=1 \
+#      -DWITH_CLIENT_WFS=1 \
+#      -DWITH_POSTGIS=0 \
+#      -DWITH_CURL=1 \
+#      -DWITH_LIBXML2=1 \
+#      -DWITH_PHP=0 \
+#      -DWITH_FRIBIDI=0 \
+#      -DWITH_FCGI=0 \
+#      -DWITH_THREAD_SAFETY=1 \
+#      -DWITH_PYTHON=1 \
+#      -DWITH_ICONV=1 \
+#      -DWITH_HARFBUZZ=0 \
+#      ..
+#make %{?smp_flags}
 
 %install
 rm -rf %{buildroot}
-make onearth-install PREFIX=%{_prefix} DESTDIR=%{buildroot}
+#make onearth-install PREFIX=%{_prefix} DESTDIR=%{buildroot}
 
-mv %{buildroot}/%{_libdir}/../lib/* %{buildroot}/%{_libdir}/
-chrpath --delete %{buildroot}/%{_bindir}/legend
-chrpath --delete %{buildroot}/%{_bindir}/mapserv
-chrpath --delete %{buildroot}/%{_bindir}/msencrypt
-chrpath --delete %{buildroot}/%{_bindir}/scalebar
-chrpath --delete %{buildroot}/%{_bindir}/shp2img
-chrpath --delete %{buildroot}/%{_bindir}/shptree
-chrpath --delete %{buildroot}/%{_bindir}/shptreetst
-chrpath --delete %{buildroot}/%{_bindir}/shptreevis
-chrpath --delete %{buildroot}/%{_bindir}/sortshp
-chrpath --delete %{buildroot}/%{_bindir}/tile4ms
-chrpath --delete %{buildroot}/%{_libdir}/*.so
+#mv %{buildroot}/%{_libdir}/../lib/* %{buildroot}/%{_libdir}/
+#chrpath --delete %{buildroot}/%{_bindir}/legend
+#chrpath --delete %{buildroot}/%{_bindir}/mapserv
+#chrpath --delete %{buildroot}/%{_bindir}/msencrypt
+#chrpath --delete %{buildroot}/%{_bindir}/scalebar
+#chrpath --delete %{buildroot}/%{_bindir}/shp2img
+#chrpath --delete %{buildroot}/%{_bindir}/shptree
+#chrpath --delete %{buildroot}/%{_bindir}/shptreetst
+#chrpath --delete %{buildroot}/%{_bindir}/shptreevis
+#chrpath --delete %{buildroot}/%{_bindir}/sortshp
+#chrpath --delete %{buildroot}/%{_bindir}/tile4ms
+#chrpath --delete %{buildroot}/%{_libdir}/*.so
 
 %clean
 rm -rf %{buildroot}
 
-%files
-%{_libdir}/httpd/modules/*
-%{_libdir}/httpd/modules/mod_proxy/*
-%defattr(-,gibs,gibs,775)
-%dir %{_datadir}/onearth
-%defattr(775,gibs,gibs,775)
-%{_datadir}/onearth/apache
-%{_datadir}/onearth/empty_tiles
-%defattr(755,root,root,-)
-%{_bindir}/oe_create_cache_config
-%{_datadir}/cgicc
+#%files
+#%{_libdir}/httpd/modules/*
+#%{_libdir}/httpd/modules/mod_proxy/*
+#%defattr(-,gibs,gibs,775)
+#%dir %{_datadir}/onearth
+#%defattr(775,gibs,gibs,775)
+#%{_datadir}/onearth/apache
+#%{_datadir}/onearth/empty_tiles
+#%defattr(755,root,root,-)
+#%{_bindir}/oe_create_cache_config
+#%{_datadir}/cgicc
 
-%post
-cd %{_datadir}/cgicc/
-%{_datadir}/cgicc/configure --prefix=%{_prefix} --libdir=%{_libdir}
-make install
-/sbin/ldconfig
+#%post
+#cd %{_datadir}/cgicc/
+#%{_datadir}/cgicc/configure --prefix=%{_prefix} --libdir=%{_libdir}
+#make install
+#/sbin/ldconfig
 
-cd %{_libdir}/httpd/modules/
-for file in %{_libdir}/httpd/modules/mod_proxy/*.so; do
-	mv "`basename "$file"`" "`basename "$file" .so`.save"
-	ln -s "$file" `basename "$file"`
-done
+#cd %{_libdir}/httpd/modules/
+#for file in %{_libdir}/httpd/modules/mod_proxy/*.so; do
+#	mv "`basename "$file"`" "`basename "$file" .so`.save"
+#	ln -s "$file" `basename "$file"`
+#done
 
-%postun
-cd %{_libdir}/httpd/modules/
-for file in %{_libdir}/httpd/modules/*.save; do
-	mv "$file" "`basename "$file" .save`.so"
-done
+#%postun
+#cd %{_libdir}/httpd/modules/
+#for file in %{_libdir}/httpd/modules/*.save; do
+#	mv "$file" "`basename "$file" .save`.so"
+#done
 
-%files tools
-%defattr(755,root,root,-)
-%{_bindir}/oe_generate_legend.py
-%{_bindir}/oe_generate_empty_tile.py
-%{_bindir}/oe_utils.py
-%{_bindir}/twmsbox2wmts.py
-%{_bindir}/wmts2twmsbox.py
-%{_bindir}/read_idx.py
-%{_bindir}/read_mrf.py
-%{_bindir}/read_mrfdata.py
-%{_bindir}/colorMaptoHTML.py
-%{_bindir}/colorMaptoSLD.py
-%{_bindir}/SLDtoColorMap.py
-%{_datadir}/mpl
+#%files tools
+#%defattr(755,root,root,-)
+#%{_bindir}/oe_generate_legend.py
+#%{_bindir}/oe_generate_empty_tile.py
+#%{_bindir}/oe_utils.py
+#%{_bindir}/twmsbox2wmts.py
+#%{_bindir}/wmts2twmsbox.py
+#%{_bindir}/read_idx.py
+#%{_bindir}/read_mrf.py
+#%{_bindir}/read_mrfdata.py
+#%{_bindir}/colorMaptoHTML.py
+#%{_bindir}/colorMaptoSLD.py
+#%{_bindir}/SLDtoColorMap.py
+#%{_datadir}/mpl
 
-%post tools
-cd %{_datadir}/mpl/
-python setup.py build
-python setup.py install
+#%post tools
+#cd %{_datadir}/mpl/
+#python setup.py build
+#python setup.py install
 
-%files config
-%defattr(664,gibs,gibs,775)
-%{_sysconfdir}/onearth/config/
-%config(noreplace) %{_sysconfdir}/onearth/config/conf
-%config(noreplace) %{_sysconfdir}/onearth/config/layers
-%config(noreplace) %{_sysconfdir}/onearth/config/reproject
-%config(noreplace) %{_sysconfdir}/onearth/config/headers
-%config(noreplace) %{_sysconfdir}/onearth/config/mapserver
-%{_sysconfdir}/onearth/config/schema
-%defattr(755,root,root,-)
-%{_bindir}/oe_configure_layer
-%{_bindir}/oe_configure_reproject_layer.py
-%{_bindir}/oe_validate_configs.py
-%{_datadir}/lxml
-%{_datadir}/pyparsing
-%{_datadir}/parse_apache_configs
+#%files config
+#%defattr(664,gibs,gibs,775)
+#%{_sysconfdir}/onearth/config/
+#%config(noreplace) %{_sysconfdir}/onearth/config/conf
+#%config(noreplace) %{_sysconfdir}/onearth/config/layers
+#%config(noreplace) %{_sysconfdir}/onearth/config/reproject
+#%config(noreplace) %{_sysconfdir}/onearth/config/headers
+#%config(noreplace) %{_sysconfdir}/onearth/config/mapserver
+#%{_sysconfdir}/onearth/config/schema
+#%defattr(755,root,root,-)
+#%{_bindir}/oe_configure_layer
+#%{_bindir}/oe_configure_reproject_layer.py
+#%{_bindir}/oe_validate_configs.py
+#%{_datadir}/lxml
+#%{_datadir}/pyparsing
+#%{_datadir}/parse_apache_configs
 
 %post config
-cd %{_datadir}/lxml
-tar -czvf lxml-3.8.0.tar.gz lxml-3.8.0
-pip install --no-index --find-links %{_datadir}/lxml lxml
-cd %{_datadir}/pyparsing
-pip install --upgrade --no-index --find-links %{_datadir}/pyparsing pyparsing
-cd %{_datadir}/parse_apache_configs
-tar -czvf parse_apache_configs-0.0.2.tar.gz parse_apache_configs-0.0.2
-pip install --no-index --find-links %{_datadir}/parse_apache_configs parse_apache_configs
+#cd %{_datadir}/lxml
+#tar -czvf lxml-3.8.0.tar.gz lxml-3.8.0
+#pip install --no-index --find-links %{_datadir}/lxml lxml
+#cd %{_datadir}/pyparsing
+#pip install --upgrade --no-index --find-links %{_datadir}/pyparsing pyparsing
+#cd %{_datadir}/parse_apache_configs
+#tar -czvf parse_apache_configs-0.0.2.tar.gz parse_apache_configs-0.0.2
+#pip install --no-index --find-links %{_datadir}/parse_apache_configs parse_apache_configs
 
-%files mrfgen
-%defattr(664,gibs,gibs,775)
-%{_datadir}/onearth/mrfgen
-%defattr(755,root,root,-)
-%{_bindir}/RGBApng2Palpng
-%{_bindir}/mrfgen
-%{_bindir}/colormap2vrt.py
-%{_bindir}/overtiffpacker.py
-%{_bindir}/oe_validate_palette.py
+#%files mrfgen
+#%defattr(664,gibs,gibs,775)
+#%{_datadir}/onearth/mrfgen
+#%defattr(755,root,root,-)
+#%{_bindir}/RGBApng2Palpng
+#%{_bindir}/mrfgen
+#%{_bindir}/colormap2vrt.py
+#%{_bindir}/overtiffpacker.py
+#%{_bindir}/oe_validate_palette.py
 
-%files metrics
-%defattr(664,gibs,gibs,775)
-%{_sysconfdir}/onearth/metrics
-%defattr(755,root,root,-)
-%{_bindir}/onearth_metrics
+#%files metrics
+#%defattr(664,gibs,gibs,775)
+#%{_sysconfdir}/onearth/metrics
+#%defattr(755,root,root,-)
+#%{_bindir}/onearth_metrics
 
-%files vectorgen
-%defattr(755,root,root,-)
-%{_datadir}/onearth/vectorgen
-%{_libdir}/libspatialindex*
-%{_libdir}/pkgconfig/libspatialindex.pc
-%{_includedir}/spatialindex/*
-%{_datarootdir}/onearth/vectorgen/*
-%{_bindir}/oe_vectorgen
+#%files vectorgen
+#%defattr(755,root,root,-)
+#%{_datadir}/onearth/vectorgen
+#%{_libdir}/libspatialindex*
+#%{_libdir}/pkgconfig/libspatialindex.pc
+#%{_includedir}/spatialindex/*
+#%{_datarootdir}/onearth/vectorgen/*
+#%{_bindir}/oe_vectorgen
 
-%post vectorgen
-/sbin/ldconfig
-pip install Fiona==1.7.0 Shapely==1.5.16 Rtree==0.8.0 mapbox-vector-tile==0.4.0 lxml==3.8.0
+#%post vectorgen
+#/sbin/ldconfig
+#pip install Fiona==1.7.0 Shapely==1.5.16 Rtree==0.8.0 mapbox-vector-tile==0.4.0 lxml==3.8.0
 
-%files test
-%defattr(-,gibs,gibs,-)
-%{_datadir}/onearth/test
+#%files test
+#%defattr(-,gibs,gibs,-)
+#%{_datadir}/onearth/test
 
-%post test
-pip install unittest2 unittest-xml-reporting==1.14.0 requests
+#%post test
+#pip install unittest2 unittest-xml-reporting==1.14.0 requests
 
 %changelog
 * Tue Feb 06 2018 Wei F. Yu <wei.f.yu@jpl.nasa.gov> - 1.3.1-4
