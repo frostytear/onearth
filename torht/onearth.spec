@@ -36,6 +36,20 @@ Requires:	httpd
 Requires:   libxml2
 Requires:   mod_ssl
 #Requires:   turbojpeg
+Requires:	libpng-devel
+Requires:	agg
+Requires:	agg-devel
+Requires:	pyparsing
+Requires:	python-devel
+Requires:	python-tornado
+Requires:	python-pycxx-devel
+Requires:	python-dateutil
+Requires:	python-pypng
+Requires:	python-lxml
+Requires:	python-nose
+Requires:   python-unittest2
+Provides:	python-matplotlib = 1.5.1
+Obsoletes:	python-matplotlib < 1.5.1
 
 %description
 Installation packages for OnEarth
@@ -185,7 +199,7 @@ rm -rf %{buildroot}
 %clean
 rm -rf %{buildroot}
 
-#%files
+%files
 #%{_libdir}/httpd/modules/*
 #%{_libdir}/httpd/modules/mod_proxy/*
 #%defattr(-,gibs,gibs,775)
@@ -197,7 +211,7 @@ rm -rf %{buildroot}
 #%{_bindir}/oe_create_cache_config
 #%{_datadir}/cgicc
 
-#%post
+%post
 #cd %{_datadir}/cgicc/
 #%{_datadir}/cgicc/configure --prefix=%{_prefix} --libdir=%{_libdir}
 #make install
@@ -209,13 +223,13 @@ rm -rf %{buildroot}
 #	ln -s "$file" `basename "$file"`
 #done
 
-#%postun
+%postun
 #cd %{_libdir}/httpd/modules/
 #for file in %{_libdir}/httpd/modules/*.save; do
 #	mv "$file" "`basename "$file" .save`.so"
 #done
 
-#%files tools
+%files tools
 #%defattr(755,root,root,-)
 #%{_bindir}/oe_generate_legend.py
 #%{_bindir}/oe_generate_empty_tile.py
@@ -230,12 +244,12 @@ rm -rf %{buildroot}
 #%{_bindir}/SLDtoColorMap.py
 #%{_datadir}/mpl
 
-#%post tools
+%post tools
 #cd %{_datadir}/mpl/
 #python setup.py build
 #python setup.py install
 
-#%files config
+%files config
 #%defattr(664,gibs,gibs,775)
 #%{_sysconfdir}/onearth/config/
 #%config(noreplace) %{_sysconfdir}/onearth/config/conf
@@ -295,8 +309,8 @@ rm -rf %{buildroot}
 #%defattr(-,gibs,gibs,-)
 #%{_datadir}/onearth/test
 
-#%post test
-#pip install unittest2 unittest-xml-reporting==1.14.0 requests
+%post test
+pip install unittest2 unittest-xml-reporting==1.14.0 requests
 
 %changelog
 * Tue Feb 06 2018 Wei F. Yu <wei.f.yu@jpl.nasa.gov> - 1.3.1-4

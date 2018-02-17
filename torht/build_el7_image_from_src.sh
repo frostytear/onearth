@@ -25,7 +25,7 @@ RUN yum install -y epel-release lua-devel jansson-devel httpd-devel libpng-devel
 RUN yum install -y luarocks redis libcurl-devel mod_proxy mod_ssl wget
 
 RUN mkdir -p /home/oe2
-RUN mkdir -p /var/www
+#RUN mkdir -p /var/www
 
 # Clone OnEarth repo
 WORKDIR /home/oe2
