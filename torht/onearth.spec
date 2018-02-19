@@ -36,18 +36,16 @@ Requires:	httpd
 Requires:   libxml2
 Requires:   mod_ssl
 #Requires:   turbojpeg
-Requires:	libpng-devel
-Requires:	agg
-Requires:	agg-devel
-Requires:	pyparsing
-Requires:	python-devel
-Requires:	python-tornado
-Requires:	python-pycxx-devel
-Requires:	python-dateutil
-Requires:	python-pypng
-Requires:	python-lxml
-Requires:	python-nose
-Requires:   python-unittest2
+BuildRequires:	agg
+BuildRequires:	agg-devel
+BuildRequires:	pyparsing
+BuildRequires:	python-tornado
+BuildRequires:	python-pycxx-devel
+BuildRequires:	python-dateutil
+BuildRequires:	python-pypng
+BuildRequires:	python-lxml
+BuildRequires:	python-nose
+BuildRequires:   python-unittest2
 Provides:	python-matplotlib = 1.5.1
 Obsoletes:	python-matplotlib < 1.5.1
 
