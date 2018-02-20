@@ -7,64 +7,66 @@ if [ ! -f /.dockerenv ]; then
 fi
 
 # Copy config stuff
-mkdir -p /var/www/html/mrf_endpoint/static_test/default/tms
-cp test_imagery/static_test* /var/www/html/mrf_endpoint/static_test/default/tms/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
+cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
 cp oe2_test_mod_mrf_static.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_mrf_static_layer.config /var/www/html/mrf_endpoint/static_test/default/tms/
+cp layer_configs/oe2_test_mod_mrf_static_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
 
-mkdir -p /var/www/html/mrf_endpoint/date_test/default/tms
-cp test_imagery/date_test* /var/www/html/mrf_endpoint/date_test/default/tms
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
+cp test_imagery/date_test* /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
 cp oe2_test_mod_mrf_date.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_mrf_date_layer.config /var/www/html/mrf_endpoint/date_test/default/tms/
+cp layer_configs/oe2_test_mod_mrf_date_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms/
 
-mkdir -p /var/www/html/mrf_endpoint/date_test_year_dir/default/tms/{2015,2016,2017}
-cp test_imagery/date_test_year_dir1420070400* /var/www/html/mrf_endpoint/date_test_year_dir/default/tms/2015
-cp test_imagery/date_test_year_dir1451606400* /var/www/html/mrf_endpoint/date_test_year_dir/default/tms/2016
-cp test_imagery/date_test_year_dir1483228800* /var/www/html/mrf_endpoint/date_test_year_dir/default/tms/2017
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/{2015,2016,2017}
+cp test_imagery/date_test_year_dir1420070400* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2015
+cp test_imagery/date_test_year_dir1451606400* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2016
+cp test_imagery/date_test_year_dir1483228800* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2017
 cp oe2_test_mod_mrf_date_year_dir.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_mrf_date_layer_year_dir.config /var/www/html/mrf_endpoint/date_test_year_dir/default/tms/
+cp layer_configs/oe2_test_mod_mrf_date_layer_year_dir.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/
 
-mkdir -p /var/www/html/reproject_endpoint/date_test/default/tms
+mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms
 cp oe2_test_mod_reproject_date.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_reproject_layer_source*.config /var/www/html/reproject_endpoint/date_test/default/tms/oe2_test_mod_reproject_date_layer_source.config
-cp layer_configs/oe2_test_mod_reproject_date*.config /var/www/html/reproject_endpoint/date_test/default/tms/
+cp layer_configs/oe2_test_mod_reproject_layer_source*.config /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms/oe2_test_mod_reproject_date_layer_source.config
+cp layer_configs/oe2_test_mod_reproject_date*.config /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms/
 
-mkdir -p /var/www/html/reproject_endpoint/static_test/default/tms
+mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms
 cp oe2_test_mod_reproject_static.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_reproject_layer_source*.config /var/www/html/reproject_endpoint/static_test/default/tms/oe2_test_mod_reproject_static_layer_source.config
-cp layer_configs/oe2_test_mod_reproject_static*.config /var/www/html/reproject_endpoint/static_test/default/tms/
+cp layer_configs/oe2_test_mod_reproject_layer_source*.config /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms/oe2_test_mod_reproject_static_layer_source.config
+cp layer_configs/oe2_test_mod_reproject_static*.config /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms/
 
 # GIBS sample configs
 
-mkdir -p /var/www/html/reproject_endpoint/BlueMarble/default/500m/
-cp layer_configs/BlueMarble_reproject.config /var/www/html/reproject_endpoint/BlueMarble/default/500m/
-cp layer_configs/BlueMarble_source.config /var/www/html/reproject_endpoint/BlueMarble/default/500m//
+cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
 
-mkdir -p /var/www/html/mrf_endpoint/BlueMarble/default/500m/
-wget -O /var/www/html/mrf_endpoint/BlueMarble/default/500m/BlueMarble.idx https://s3.amazonaws.com/gitc-test-imagery/BlueMarble.idx
-cp layer_configs/BlueMarble.config /var/www/html/mrf_endpoint/BlueMarble/default/500m/
+mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/BlueMarble/default/500m/
+cp layer_configs/BlueMarble_reproject.config /build/test/mod_mrf_test_data/reproject_endpoint/BlueMarble/default/500m/
+cp layer_configs/BlueMarble_source.config /build/test/mod_mrf_test_data/reproject_endpoint/BlueMarble/default/500m//
 
-mkdir -p /var/www/html/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/
-wget -O /var/www/html/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/MOG13Q4_LQD_NDVI_NRT1514764800.idx https://s3.amazonaws.com/gitc-test-imagery/MOG13Q4_LQD_NDVI_NRT1514764800.idx
-cp layer_configs/MOGCR_LQD_143_STD.config /var/www/html/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/BlueMarble/default/500m/
+wget -O /build/test/mod_mrf_test_data/mrf_endpoint/BlueMarble/default/500m/BlueMarble.idx https://s3.amazonaws.com/gitc-test-imagery/BlueMarble.idx
+cp layer_configs/BlueMarble.config /build/test/mod_mrf_test_data/mrf_endpoint/BlueMarble/default/500m/
 
-mkdir -p /var/www/html/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/2018
-wget -O /var/www/html/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/VNGCR_LQD_I1-M4-M3_NRT.idx https://s3.amazonaws.com/gitc-test-imagery/VNGCR_LQD_I1-M4-M3_NRT.idx
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/
+wget -O /build/test/mod_mrf_test_data/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/MOG13Q4_LQD_NDVI_NRT1514764800.idx https://s3.amazonaws.com/gitc-test-imagery/MOG13Q4_LQD_NDVI_NRT1514764800.idx
+cp layer_configs/MOGCR_LQD_143_STD.config /build/test/mod_mrf_test_data/mrf_endpoint/MOGCR_LQD_143_STD/default/250m/
+
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/2018
+wget -O /build/test/mod_mrf_test_data/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/VNGCR_LQD_I1-M4-M3_NRT.idx https://s3.amazonaws.com/gitc-test-imagery/VNGCR_LQD_I1-M4-M3_NRT.idx
 d=1516060800
 until [ $d -gt 1524614400 ]; do
-    ln -s /var/www/html/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/VNGCR_LQD_I1-M4-M3_NRT.idx /var/www/html/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/2018/VNGCR_LQD_I1-M4-M3_NRT$d.idx
+    ln -s /build/test/mod_mrf_test_data/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/VNGCR_LQD_I1-M4-M3_NRT.idx /build/test/mod_mrf_test_data/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/2018/VNGCR_LQD_I1-M4-M3_NRT$d.idx
     let d+=86400
 done
-cp layer_configs/VNGCR_LQD_I1-M4-M3_NRT*.config /var/www/html/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/
+cp layer_configs/VNGCR_LQD_I1-M4-M3_NRT*.config /build/test/mod_mrf_test_data/mrf_endpoint/VNGCR_LQD_I1-M4-M3_NRT/default/250m/
 
-mkdir -p /var/www/html/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/2018
-wget -O /var/www/html/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/MOG13Q4_LQD_NDVI_NRT.idx https://s3.amazonaws.com/gitc-test-imagery/MOG13Q4_LQD_NDVI_NRT.idx
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/2018
+wget -O /build/test/mod_mrf_test_data/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/MOG13Q4_LQD_NDVI_NRT.idx https://s3.amazonaws.com/gitc-test-imagery/MOG13Q4_LQD_NDVI_NRT.idx
 d=1514764800
 until [ $d -gt 1523318400 ]; do
-    ln -s /var/www/html/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/MOG13Q4_LQD_NDVI_NRT.idx /var/www/html/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/2018/MOG13Q4_LQD_NDVI_NRT$d.idx
+    ln -s /build/test/mod_mrf_test_data/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/MOG13Q4_LQD_NDVI_NRT.idx /build/test/mod_mrf_test_data/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/2018/MOG13Q4_LQD_NDVI_NRT$d.idx
     let d+=86400
 done
-cp layer_configs/MOG13Q4_LQD_NDVI_NRT.config /var/www/html/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/
+cp layer_configs/MOG13Q4_LQD_NDVI_NRT.config /build/test/mod_mrf_test_data/mrf_endpoint/MOG13Q4_LQD_NDVI_NRT/default/250m/
 
 echo 'Starting Apache server'
 /usr/sbin/apachectl
