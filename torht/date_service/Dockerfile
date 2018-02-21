@@ -6,7 +6,7 @@ RUN yum install -y luarocks
 RUN yum install -y redis
 
 RUN mkdir /home/oe2
-RUN mkdir -p /var/www
+#RUN mkdir -p /var/www
 
 # Clone OnEarth repo
 WORKDIR /home/oe2

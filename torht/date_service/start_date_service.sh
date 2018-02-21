@@ -6,8 +6,8 @@ fi
 
 # Copy config stuff
 cp oe2_test_date_service.conf /etc/httpd/conf.d
-mkdir -p /var/www/html/date_service
-cp date_service.lua /var/www/html/date_service/date_service.lua
+mkdir -p /build/test/mod_mrf_test_data/date_service
+cp date_service.lua /build/test/mod_mrf_test_data/date_service/date_service.lua
 
 echo 'Starting Apache server'
 /usr/sbin/apachectl
