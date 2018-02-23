@@ -15,7 +15,7 @@ cp layer_configs/oe2_test_mod_mrf_static_layer.config /build/test/mod_mrf_test_d
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
 cp test_imagery/date_test* /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
 cp oe2_test_mod_mrf_date.conf /etc/httpd/conf.d
-cp layer_configs/oe2_test_mod_mrf_date_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms/
+cp layer_configs/test_mod_mrf_date_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms/
 
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/{2015,2016,2017}
 cp test_imagery/date_test_year_dir1420070400* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2015
