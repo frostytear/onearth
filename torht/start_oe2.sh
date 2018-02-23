@@ -6,6 +6,9 @@ if [ ! -f /.dockerenv ]; then
   exit 1
 fi
 
+# Change default dir to /build/test/mod_mrf_test_data
+cp httpd.conf /etc/httpd/conf/
+
 # Copy config stuff
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
 cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
