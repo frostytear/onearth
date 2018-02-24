@@ -15,6 +15,10 @@ mkdir -p /build/test/mod_mrf_test_data/date_service
 cp date_service/date_service.lua /build/test/mod_mrf_test_data/date_service
 
 # Copy config stuff
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km
+cp /build/test/mod_mrf_test_data/mrf_test.conf /etc/httpd/conf.d
+cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
+
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
 cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
 cp oe2_test_mod_mrf_static.conf /etc/httpd/conf.d
@@ -43,8 +47,6 @@ cp layer_configs/oe2_test_mod_reproject_layer_source*.config /build/test/mod_mrf
 cp layer_configs/oe2_test_mod_reproject_static*.config /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms/
 
 # GIBS sample configs
-
-cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
 
 mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/BlueMarble/default/500m/
 cp layer_configs/BlueMarble_reproject.config /build/test/mod_mrf_test_data/reproject_endpoint/BlueMarble/default/500m/
