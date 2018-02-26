@@ -16,7 +16,8 @@ cp date_service/date_service.lua /build/test/mod_mrf_test_data/date_service
 
 # Copy config stuff
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km
-cp /build/test/mod_mrf_test_data/mrf_test.conf /etc/httpd/conf.d
+cp -r ../src/test/mod_mrf_test_data/test_imagery /build/test/mod_mrf_test_data/
+cp ../src/test/mod_mrf_test_data/mrf_test.conf /etc/httpd/conf.d
 cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
 
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
