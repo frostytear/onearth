@@ -97,6 +97,12 @@ sleep 2
 /usr/bin/redis-cli  -n 0 DEL layer:test_daily_png
 /usr/bin/redis-cli  -n 0 SET layer:test_daily_png:default "2012-02-29"
 /usr/bin/redis-cli  -n 0 SADD layer:test_daily_png:periods "2012-02-29/2012-02-29/P1D"
+/usr/bin/redis-cli  -n 0 DEL layer:test_legacy_subdaily_jpg
+/usr/bin/redis-cli  -n 0 SET layer:test_legacy_subdaily_jpg:default "2012-02-29T12:00:00Z"
+/usr/bin/redis-cli  -n 0 SADD layer:test_legacy_subdaily_jpg:periods "2012-02-29T12:00:00Z/2012-02-29T14:00:00Z/PT2H"
+/usr/bin/redis-cli  -n 0 DEL layer:test_nonyear_jpg
+/usr/bin/redis-cli  -n 0 SET layer:test_nonyear_jpg:default "2012-02-29"
+/usr/bin/redis-cli  -n 0 SADD layer:test_nonyear_jpg:periods "2012-02-29/2012-02-29/P1D"
 /usr/bin/redis-cli  -n 0 DEL layer:date_test_year_dir
 /usr/bin/redis-cli  -n 0 SET layer:date_test_year_dir:default "2015-01-01"
 /usr/bin/redis-cli  -n 0 SADD layer:date_test_year_dir:periods "2015-01-01/2017-01-01/P1Y"
