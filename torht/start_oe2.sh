@@ -1,5 +1,4 @@
 #!/bin/sh
-#REDIS_HOST=gitc-jrod-redis.4fest7.ng.0001.use1.cache.amazonaws.com
 
 if [ ! -f /.dockerenv ]; then
   echo "This script is only intended to be run from within Docker" >&2
@@ -19,6 +18,10 @@ mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4
 cp -r ../src/test/mod_mrf_test_data/test_imagery /build/test/mod_mrf_test_data/
 cp ../src/test/mod_mrf_test_data/mrf_test.conf /etc/httpd/conf.d
 cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_legacy_subdaily_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_nonyear_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/
 
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
 cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
@@ -88,22 +91,6 @@ echo 'Starting Redis server'
 sleep 2
 
 # Add some test data to redis for profiling
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 DEL layer:date_test
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SET layer:date_test:default "2015-01-01"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SADD layer:date_test:periods "2015-01-01/2017-01-01/P1Y"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 DEL layer:date_test_year_dir
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SET layer:date_test_year_dir:default "2015-01-01"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SADD layer:date_test_year_dir:periods "2015-01-01/2017-01-01/P1Y"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 DEL layer:MOGCR_LQD_143_STD
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SET layer:MOGCR_LQD_143_STD:default "2011-01-01"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SADD layer:MOGCR_LQD_143_STD:periods "2011-01-01/2011-01-02/P1D"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 DEL layer:VNGCR_LQD_I1-M4-M3_NRT
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SET layer:VNGCR_LQD_I1-M4-M3_NRT:default "2018-01-16"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SADD layer:VNGCR_LQD_I1-M4-M3_NRT:periods "2018-01-16/2019-01-16/P1D"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 DEL layer:MOG13Q4_LQD_NDVI_NRT
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SET layer:MOG13Q4_LQD_NDVI_NRT:default "2018-01-01"
-#/usr/bin/redis-cli -h $REDIS_HOST -n 0 SADD layer:MOG13Q4_LQD_NDVI_NRT:periods "2018-01-01/2019-01-01/P1D"
-# /usr/bin/redis-cli -h $REDIS_HOST -n 0 SAVE
 /usr/bin/redis-cli  -n 0 DEL layer:date_test
 /usr/bin/redis-cli  -n 0 SET layer:date_test:default "2015-01-01"
 /usr/bin/redis-cli  -n 0 SADD layer:date_test:periods "2015-01-01/2017-01-01/P1Y"
