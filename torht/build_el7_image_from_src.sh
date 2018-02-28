@@ -101,7 +101,7 @@ RUN cp /home/oe2/onearth/torht/00-mpm.conf /etc/httpd/conf.modules.d/
 RUN cp /home/oe2/onearth/torht/10-worker.conf /etc/httpd/conf.modules.d/
 
 WORKDIR /home/oe2/onearth/torht
-CMD sh start_oe2.sh
+CMD sh start_ci2.sh
 EOS
 
 docker build \
