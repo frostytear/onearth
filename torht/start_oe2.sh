@@ -22,6 +22,10 @@ mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/def
 cp layer_configs/test_mod_mrf_legacy_subdaily_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km
 cp layer_configs/test_mod_mrf_nonyear_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_static_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_static_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_static_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_weekly_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/
 
 mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
 cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
@@ -103,6 +107,9 @@ sleep 2
 /usr/bin/redis-cli  -n 0 DEL layer:test_nonyear_jpg
 /usr/bin/redis-cli  -n 0 SET layer:test_nonyear_jpg:default "2012-02-29"
 /usr/bin/redis-cli  -n 0 SADD layer:test_nonyear_jpg:periods "2012-02-29/2012-02-29/P1D"
+/usr/bin/redis-cli  -n 0 DEL layer:test_weekly_jpg
+/usr/bin/redis-cli  -n 0 SET layer:test_weekly_jpg:default "2012-02-29"
+/usr/bin/redis-cli  -n 0 SADD layer:test_weekly_jpg:periods "2012-02-22/2012-02-29/P7D"
 /usr/bin/redis-cli  -n 0 DEL layer:date_test_year_dir
 /usr/bin/redis-cli  -n 0 SET layer:date_test_year_dir:default "2015-01-01"
 /usr/bin/redis-cli  -n 0 SADD layer:date_test_year_dir:periods "2015-01-01/2017-01-01/P1Y"
