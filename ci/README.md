@@ -1,11 +1,11 @@
-# Building and Installing OE2
+# Building and Installing OE2 CI configuration
 
 ## Docker setup
 
-The included Dockerfile will build an image with OE2. The build is configured
-for CI tests.
+The included build_el7_docker_image.sh will build an image with OE2. The build 
+is configured for CI tests.
 
-To run, simply build the image `docker build -t onearth_2 .`, and then start a
+To run, simply build the image `./ci/build_el7_image_from_src.sh <tag name>`, and then start a
 container using that image. Make sure to expose port 80 on the container to
 access the image server.
 

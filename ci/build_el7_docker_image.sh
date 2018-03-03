@@ -65,7 +65,7 @@ cd /tmp
 wget https://archive.apache.org/dist/httpd/httpd-2.4.6.tar.gz
 tar xf httpd-2.4.6.tar.gz
 cd /tmp/httpd-2.4.6
-patch -p0 < /build/torht/mod_proxy_http.patch
+patch -p0 < /build/ci/mod_proxy_http.patch
 ./configure --prefix=/tmp/httpd --enable-proxy=shared --enable-proxy-balancer=shared
 make && make install
 
@@ -83,31 +83,31 @@ make && make install
   set -evx
   cd /build
   git submodule update --init --recursive
-  yum-builddep -y torht/onearth.spec
+  yum-builddep -y ci/onearth.spec
 
   # Install Apache modules
   cd /build/src/modules/mod_receive/src/
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   make && make install
 
   cd /build/src/modules/mod_mrf/src/
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   make && make install
 
   cd /build/src/modules/mod_reproject/src/
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   make && make install
 
   cd /build/src/modules/mod_twms/src/
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   make && make install
 
   cd /build/src/modules/mod_ahtse_lua/src/
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   make && make install
 
   cd /build/src/modules/mod_wmts_wrapper
-  cp /build/torht/Makefile.lcl .
+  cp /build/ci/Makefile.lcl .
   cp /build/src/modules/mod_reproject/src/mod_reproject.h .
   make && make install
 

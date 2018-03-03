@@ -40,7 +40,7 @@ WORKDIR /tmp
 RUN wget https://archive.apache.org/dist/httpd/httpd-2.4.6.tar.gz
 RUN tar xf httpd-2.4.6.tar.gz
 WORKDIR /tmp/httpd-2.4.6
-RUN patch -p0 < /home/oe2/onearth/torht/mod_proxy_http.patch
+RUN patch -p0 < /home/oe2/onearth/ci/mod_proxy_http.patch
 RUN ./configure --prefix=/tmp/httpd --enable-proxy=shared --enable-proxy-balancer=shared
 RUN make && make install
 
@@ -57,32 +57,32 @@ RUN make && make install
 # Install dependencies
 WORKDIR /home/oe2/onearth
 RUN git submodule update --init --recursive
-RUN yum-builddep -y torht/onearth.spec
+RUN yum-builddep -y ci/onearth.spec
 RUN make download
 
 # Install Apache modules
 WORKDIR /home/oe2/onearth/src/modules/mod_receive/src/
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN make && make install
 
 WORKDIR /home/oe2/onearth/src/modules/mod_mrf/src/
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN make && make install
 
 WORKDIR /home/oe2/onearth/src/modules/mod_reproject/src/
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN make && make install
 
 WORKDIR /home/oe2/onearth/src/modules/mod_twms/src/
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN make && make install
 
 WORKDIR /home/oe2/onearth/src/modules/mod_ahtse_lua/src/
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN make && make install
 
 WORKDIR /home/oe2/onearth/src/modules/mod_wmts_wrapper
-RUN cp /home/oe2/onearth/torht/Makefile.lcl .
+RUN cp /home/oe2/onearth/ci/Makefile.lcl .
 RUN cp /home/oe2/onearth/src/modules/mod_reproject/src/mod_reproject.h .
 RUN make && make install
 
@@ -97,10 +97,10 @@ RUN perl -pi -e "s/LogLevel warn/LogLevel debug/g" /etc/httpd/conf/httpd.conf
 RUN perl -pi -e 's/LogFormat "%h %l %u %t \\"%r\\" %>s %b/LogFormat "%h %l %u %t \\"%r\\" %>s %b %D /g' /etc/httpd/conf/httpd.conf
 
 # Set Apache configuration for optimized threading
-RUN cp /home/oe2/onearth/torht/00-mpm.conf /etc/httpd/conf.modules.d/
-RUN cp /home/oe2/onearth/torht/10-worker.conf /etc/httpd/conf.modules.d/
+RUN cp /home/oe2/onearth/ci/00-mpm.conf /etc/httpd/conf.modules.d/
+RUN cp /home/oe2/onearth/ci/10-worker.conf /etc/httpd/conf.modules.d/
 
-WORKDIR /home/oe2/onearth/torht
+WORKDIR /home/oe2/onearth/ci
 CMD sh start_ci2.sh
 EOS
 
