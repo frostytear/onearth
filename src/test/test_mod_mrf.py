@@ -65,7 +65,6 @@ class TestModMrf(unittest.TestCase):
         self.test_apache_config = os.path.join(testdata_path, 'mrf_test.conf')
         dateservice_path = os.path.join(testdata_path, 'date_service')
         date_config = os.path.join(dateservice_path, 'oe2_test_date_service.conf')
-httpd.conf')
         
         # Override default dir for httpd (httpd.conf)
         file_text_replace(httpd_config, os.path.join('/etc/httpd/conf', os.path.basename(httpd_config)), '{nonexistant_path}', testdata_path)
@@ -83,7 +82,7 @@ httpd.conf')
 
         run_command('redis-cli -n 0 DEL layer:test_daily_png')
         run_command('redis-cli -n 0 SET layer:test_daily_png:default "2012-02-29"')
-        run_commamd('redis-cli -n 0 SADD layer:test_daily_png:periods "2012-02-29/2012-02-29/P1D"')
+        run_command('redis-cli -n 0 SADD layer:test_daily_png:periods "2012-02-29/2012-02-29/P1D"')
         run_command('redis-cli -n 0 DEL layer:test_legacy_subdaily_jpg')
         run_command('redis-cli -n 0 SET layer:test_legacy_subdaily_jpg:default "2012-02-29T12:00:00Z"')
         run_command('redis-cli -n 0 SADD layer:test_legacy_subdaily_jpg:periods "2012-02-29T12:00:00Z/2012-02-29T14:00:00Z/PT2H"')

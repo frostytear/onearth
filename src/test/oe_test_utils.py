@@ -185,17 +185,21 @@ def restart_redis():
     try:
         check_redis_running()
         if "el7" in platform.release():
-            redis = subprocess.Popen('pkill --signal HUP --uid root redis-server'.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            subprocess.Popen('pkill --signal TERM --uid root redis-server'.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            redis = subprocess.Popen(['redis-server'], close_fds=True)
         else:
-            redis = subprocess.Popen('pkill --signal HUP --uid root redis-server'.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            subprocess.Popen('pkill --signal TERM --uid root redis-server'.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            redis = subprocess.Popen(['redis-server'], close_fds=True)
     except ValueError:
-        redis = subprocess.Popen(['redis-server&'], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    (stdout, stderr) = redis.communicate()
-    if stdout != None and len(stdout) != 0:
-        sys.stderr.write("\n=== STDOUT from restart_redis():\n%s\n===\n" % stdout.rstrip())
-    if stderr != None and len(stderr) != 0:
-        sys.stderr.write("\n=== STDERR from restart_redis():\n%s\n===\n" % stderr.rstrip())
-    subprocess.call(['sleep', '3'])
+        #redis = subprocess.Popen(['redis-server'], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        redis = subprocess.Popen(['redis-server'], close_fds=True)
+
+#    (stdout, stderr) = redis.communicate()
+#    if stdout != None and len(stdout) != 0:
+#        sys.stderr.write("\n=== STDOUT from restart_redis():\n%s\n===\n" % stdout.rstrip())
+#    if stderr != None and len(stderr) != 0:
+#        sys.stderr.write("\n=== STDERR from restart_redis():\n%s\n===\n" % stderr.rstrip())
+    subprocess.call(['sleep', '2'])
 
 
 def run_command(cmd, ignore_warnings=False, wait=True, ignore_errors=False):
