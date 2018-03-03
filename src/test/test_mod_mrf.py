@@ -46,7 +46,7 @@ from optparse import OptionParser
 import datetime
 from xml.etree import cElementTree as ElementTree
 import urllib2
-from oe_test_utils import check_tile_request, restart_apache, check_response_code, test_snap_request, file_text_replace, make_dir_tree, run_command, get_url, XmlDictConfig, check_dicts, check_valid_mvt
+from oe_test_utils import check_tile_request, restart_apache, restart_redis, check_response_code, test_snap_request, file_text_replace, make_dir_tree, run_command, get_url, XmlDictConfig, check_dicts, check_valid_mvt
 
 DEBUG = False
 
@@ -58,37 +58,42 @@ class TestModMrf(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         # Get the path of the test data -- we assume that the script is in the parent dir of the data dir
-        testdata_path = os.path.join(os.getcwd(), 'mod_mrf_test_data')
-#        wmts_configs = ('wmts_cache_configs', 'wmts_cache_staging', 'test_imagery/cache_all_wmts.config')
-#        twms_configs = ('twms_cache_configs', 'twms_cache_staging', 'test_imagery/cache_all_twms.config')
+        testdata_path = os.path.join(os.getcwd(), 'ci_tests')
+        httpd_config = os.path.join(testdata_path, 'httpd.conf')
         self.image_files_path = os.path.join(testdata_path, 'test_imagery')
-        self.daily_png_config = os.path.join(testdata_path, 'layer_configs/test_mod_mrf_daily_png.config')
+#        self.daily_png_config = os.path.join(testdata_path, 'layer_configs/test_mod_mrf_daily_png.config')
         self.test_apache_config = os.path.join(testdata_path, 'mrf_test.conf')
+        dateservice_path = os.path.join(testdata_path, 'date_service')
+        date_config = os.path.join(dateservice_path, 'oe2_test_date_service.conf')
+httpd.conf')
         
-#        for template_dir, staging_dir, cache_config in (wmts_configs, twms_configs):
-            # Make staging cache files dir
-#            template_path = os.path.join(testdata_path, template_dir)
-#            staging_path = os.path.join(testdata_path, staging_dir)
-#            cache_path = os.path.join(testdata_path, cache_config)
-#            make_dir_tree(staging_path)
+        # Override default dir for httpd (httpd.conf)
+        file_text_replace(httpd_config, os.path.join('/etc/httpd/conf', os.path.basename(httpd_config)), '{nonexistant_path}', testdata_path)
 
-            # Copy XML/MRF files to staging cache files dir, swapping in the location of the imagery files
-#            for file in [f for f in os.listdir(template_path) if os.path.isfile(os.path.join(template_path, f))]:
-#                file_text_replace(os.path.join(template_path, file), os.path.join(staging_path, file),
-#                                  '{cache_path}', self.image_files_path)
+        # Set up date_service config
+        file_text_replace(date_config, os.path.join('/etc/httpd/conf.d', os.path.basename(date_config)), '{nonexistant_path}', dateservice_path)
 
-            # Run oe_create_cache_config to make the cache config files
-#            cmd = 'oe_create_cache_config -cbd {0} {1}'.format(staging_path, cache_path)
-#            run_command(cmd)
-#        self.staging_path = staging_path
-
-        # Put the correct path into the Apache config (mrf_test.conf)
-        testconfig_path = os.path.join(testdata_path, 'mrf_endpoint/test_daily_png/default/EPSG4326_16km')
-        file_text_replace(self.daily_png_config, os.path.join(testconfig_path, os.path.basename(self.daily_png_config)),
-                          '{nonexistant_path}', testdata_path)
+        # Set up the Apache config (mrf_test.conf)
         file_text_replace(self.test_apache_config, os.path.join('/etc/httpd/conf.d', os.path.basename(self.test_apache_config)),
                           '{nonexistant_path}', testdata_path)
         restart_apache()
+
+        # Set up the redis config
+        restart_redis()
+
+        run_command('redis-cli -n 0 DEL layer:test_daily_png')
+        run_command('redis-cli -n 0 SET layer:test_daily_png:default "2012-02-29"')
+        run_commamd('redis-cli -n 0 SADD layer:test_daily_png:periods "2012-02-29/2012-02-29/P1D"')
+        run_command('redis-cli -n 0 DEL layer:test_legacy_subdaily_jpg')
+        run_command('redis-cli -n 0 SET layer:test_legacy_subdaily_jpg:default "2012-02-29T12:00:00Z"')
+        run_command('redis-cli -n 0 SADD layer:test_legacy_subdaily_jpg:periods "2012-02-29T12:00:00Z/2012-02-29T14:00:00Z/PT2H"')
+        run_command('redis-cli -n 0 DEL layer:test_nonyear_jpg')
+        run_command('redis-cli -n 0 SET layer:test_nonyear_jpg:default "2012-02-29"')
+        run_command('redis-cli -n 0 SADD layer:test_nonyear_jpg:periods "2012-02-29/2012-02-29/P1D"')
+        run_command('redis-cli -n 0 DEL layer:test_weekly_jpg')
+        run_command('redis-cli -n 0 SET layer:test_weekly_jpg:default "2012-02-29"')
+        run_command('redis-cli -n 0 SADD layer:test_weekly_jpg:periods "2012-02-22/2012-02-29/P7D"')
+        run_command('redis-cli -n 0 SAVE')
 
         # Set some handy constant values
         self.tile_hashes = {'3d5280b13cbabc41676973d26844f310': '1948-03-01',
@@ -128,7 +133,7 @@ class TestModMrf(unittest.TestCase):
                             '5e11f1220da2bb6f92d3e1c998f20bcf': 'black'}
 
         # URL that will be used to create the snap test requests
-        self.snap_test_url_template = 'http://localhost/onearth/test/wmts/wmts.cgi?layer={0}&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME={1}'
+        self.snap_test_url_template = 'http://localhost/mrf_endpoint/wmts.cgi?layer={0}&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME={1}'
 
     # DEFAULT TIME AND CURRENT TIME TESTS
 
@@ -142,7 +147,7 @@ class TestModMrf(unittest.TestCase):
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
 
         # The URL of the tile to be requested
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
 
         # Debug message (if DEBUG is set)
         if DEBUG:
@@ -164,7 +169,7 @@ class TestModMrf(unittest.TestCase):
 
         # The URL of the tile to be requested
         # {wmtsBaseUrl}/{layer}/{style}/{dimension1}/.../{dimensionN}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}{formatExtension}
-        req_url = 'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
 
         # Debug message (if DEBUG is set)
         if DEBUG:
@@ -180,7 +185,7 @@ class TestModMrf(unittest.TestCase):
         2 .Request current (no time) PNG tile via WMTS
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PNG tile via WMTS'
@@ -193,7 +198,7 @@ class TestModMrf(unittest.TestCase):
         2B. Request current (no time) PNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/test_daily_png/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/EPSG4326_16km/0/0/0.png'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PNG tile via WMTS REST'
@@ -206,7 +211,7 @@ class TestModMrf(unittest.TestCase):
         3. Request current (no time) PPNG tile via WMTS
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PPNG tile via WMTS'
@@ -219,7 +224,7 @@ class TestModMrf(unittest.TestCase):
         3B. Request current (no time) PPNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/test_daily_png/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/EPSG4326_16km/0/0/0.png'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PPNG tile via WMTS REST'
@@ -232,7 +237,7 @@ class TestModMrf(unittest.TestCase):
         4. Request current (time=default) JPEG tile via WMTS
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (time=default) JPG tile via WMTS'
@@ -246,7 +251,7 @@ class TestModMrf(unittest.TestCase):
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
         # https://gibs/earrthdata.nasa.gov/wmts/epsg{EPSG:Code}/best/{ProductName}/default/{time}/{TileMatrixSet}/{ZoomLevel}/{TileRow}/{TileColumn}.png
-        req_url = 'http://localhost/onearth/test/wmts/test_weekly_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (time=default) JPG tile via WMTS REST'
@@ -259,7 +264,7 @@ class TestModMrf(unittest.TestCase):
         5. Request current (time=default) PNG tile via WMTS
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0&TIME=default'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0&TIME=default'
         if DEBUG:
             print '\nTesting: Request current (time=default) PNG tile via WMTS'
             print 'URL: ' + req_url
@@ -271,7 +276,7 @@ class TestModMrf(unittest.TestCase):
         5B. Request current (time=default) PNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
         if DEBUG:
             print '\nTesting: Request current (time=default) PNG tile via WMTS REST'
             print 'URL: ' + req_url
@@ -283,7 +288,7 @@ class TestModMrf(unittest.TestCase):
         6. Request current (time=default) PPNG tile via WMTS
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0&TIME=default'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_daily_png&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=0&TileCol=0&TileRow=0&TIME=default'
         if DEBUG:
             print '\nTesting: Request current (time=default) PPNG tile via WMTS'
             print 'URL: ' + req_url
@@ -295,7 +300,7 @@ class TestModMrf(unittest.TestCase):
         6B. Request current (time=default) PPNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/wmts/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
         if DEBUG:
             print '\nTesting: Request current (time=default) PPNG tile via WMTS REST'
             print 'URL: ' + req_url
@@ -345,7 +350,7 @@ class TestModMrf(unittest.TestCase):
         10. Request tile with date from "year" layer via WMTS
         """
         ref_hash = '9b38d90baeeebbcadbc8560a29481a5e'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-22'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-22'
         if DEBUG:
             print '\nTesting: Request tile with date from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -357,7 +362,7 @@ class TestModMrf(unittest.TestCase):
         10B. Request tile with date from "year" layer via WMTS (REST)
         """
         ref_hash = '9b38d90baeeebbcadbc8560a29481a5e'
-        req_url = 'http://localhost/onearth/test/wmts/test_weekly_jpg/default/2012-02-22/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-22/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with date from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -381,7 +386,7 @@ class TestModMrf(unittest.TestCase):
         11. Request tile with date  from "non-year" layer via WMTS
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_nonyear_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_nonyear_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29'
         if DEBUG:
             print '\nTesting: Request tile with date  from "non-year layer via WMTS'
             print 'URL: ' + req_url
@@ -393,7 +398,7 @@ class TestModMrf(unittest.TestCase):
         11B. Request tile with date  from "non-year" layer via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/test_nonyear_jpg/default/2012-02-29/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_nonyear_jpg/default/2012-02-29/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with date  from "non-year layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -417,7 +422,7 @@ class TestModMrf(unittest.TestCase):
         12. Request tile with date and time (sub-daily) from "year" layer via WMTS
         """
         ref_hash = '5a39c4e335d05295160a7bec4961002d'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_legacy_subdaily_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29T12:00:00Z'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_legacy_subdaily_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29T12:00:00Z'
         if DEBUG:
             print '\nTesting: Request tile with date and time (legacy sub-daily) from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -429,7 +434,7 @@ class TestModMrf(unittest.TestCase):
         12B. Request tile with date and time (sub-daily) from "year" layer via WMTS (REST)
         """
         ref_hash = '5a39c4e335d05295160a7bec4961002d'
-        req_url = 'http://localhost/onearth/test/wmts/test_legacy_subdaily_jpg/default/2012-02-29T12:00:00Z/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_legacy_subdaily_jpg/default/2012-02-29T12:00:00Z/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with date and time (legacy sub-daily) from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -453,7 +458,7 @@ class TestModMrf(unittest.TestCase):
         13. Request tile with date and time (z-level) from "year" layer via WMTS
         """
         ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29T16:00:00Z'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29T16:00:00Z'
         if DEBUG:
             print '\nTesting: Request tile with date and time (z-level) from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -465,7 +470,7 @@ class TestModMrf(unittest.TestCase):
         13B. Request tile with date and time (z-level) from "year" layer via WMTS (REST)
         """
         ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/wmts/test_zindex_jpg/default/2012-02-29T16:00:00Z/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_zindex_jpg/default/2012-02-29T16:00:00Z/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with date and time (z-level) from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -486,7 +491,7 @@ class TestModMrf(unittest.TestCase):
         14. Request tile with no date from "year" layer via WMTS
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
         if DEBUG:
             print '\nTesting: Request tile with no date from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -498,7 +503,7 @@ class TestModMrf(unittest.TestCase):
         14B. Request tile with no date from "year" layer via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -522,7 +527,7 @@ class TestModMrf(unittest.TestCase):
         15. Request tile with no date from "non-year" layer via WMTS
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_nonyear_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_nonyear_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
         if DEBUG:
             print '\nTesting: Request tile with no date from "non-year layer via WMTS'
             print 'URL: ' + req_url
@@ -534,7 +539,7 @@ class TestModMrf(unittest.TestCase):
         15B. Request tile with no date from "non-year" layer via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/test_nonyear_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date from "non-year layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -558,7 +563,7 @@ class TestModMrf(unittest.TestCase):
         16. Request tile with no date and time (sub-daily) from "year" layer via WMTS
         """
         ref_hash = '3affdef85d2c83cbbb9d010296f1b5f2' 
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_legacy_subdaily_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_legacy_subdaily_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
         if DEBUG:
             print '\nTesting: Request tile with no date and time (legacy sub-daily) from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -570,7 +575,7 @@ class TestModMrf(unittest.TestCase):
         16B. Request tile with no date and time (sub-daily) from "year" layer via WMTS (REST)
         """
         ref_hash = '3affdef85d2c83cbbb9d010296f1b5f2' 
-        req_url = 'http://localhost/onearth/test/wmts/test_legacy_subdaily_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date and time (legacy sub-daily) from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -594,7 +599,7 @@ class TestModMrf(unittest.TestCase):
         17. Request tile with no date and time (z-level) from "year" layer via WMTS
         """
         ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
         if DEBUG:
             print '\nTesting: Request tile with no date and time (z-level) from "year" layer via WMTS'
             print 'URL: ' + req_url
@@ -606,7 +611,7 @@ class TestModMrf(unittest.TestCase):
         17B. Request tile with no date and time (z-level) from "year" layer via WMTS (REST)
         """
         ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/wmts/test_zindex_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_zindex_jpg/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date and time (z-level) from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
@@ -627,7 +632,7 @@ class TestModMrf(unittest.TestCase):
         18. Request tile from static layer with no time via WMTS
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_static_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_static_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
         if DEBUG:
             print '\nTesting: Request tile from static layer with no time via WMTS'
             print 'URL: ' + req_url
@@ -639,7 +644,7 @@ class TestModMrf(unittest.TestCase):
         18B. Request tile from static layer with no time via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/test_static_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_static_jpg/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile from static layer with no time via WMTS (REST)'
             print 'URL: ' + req_url
@@ -752,7 +757,7 @@ class TestModMrf(unittest.TestCase):
         23. Request WMTS GetCapabilities
         """
         ref_hash = 'b49538ed143340f11230eac8b8f9ecca'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?Request=GetCapabilities'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?Request=GetCapabilities'
         if DEBUG:
             print '\nTesting WMTS GetCapablities'
             print 'URL: ' + req_url
@@ -767,7 +772,7 @@ class TestModMrf(unittest.TestCase):
             xml_check = False
         self.assertTrue(xml_check, 'GetCapabilities response is not a valid XML file. URL: ' + req_url)
 
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'mod_mrf_test_data/GetCapabilities.1.0.0.xml'))
+        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/GetCapabilities.1.0.0.xml'))
         refXMLroot = refXMLtree.getroot()
         refXMLdict = XmlDictConfig(refXMLroot)
 
@@ -779,7 +784,7 @@ class TestModMrf(unittest.TestCase):
         24. Request WMTS (REST) GetCapabilities
         """
         ref_hash = 'b49538ed143340f11230eac8b8f9ecca'
-        req_url = 'http://localhost/onearth/test/wmts/1.0.0/WMTSCapabilities.xml'
+        req_url = 'http://localhost/mrf_endpoint/1.0.0/WMTSCapabilities.xml'
         if DEBUG:
             print '\nTesting WMTS (REST) GetCapablities'
             print 'URL: ' + req_url
@@ -794,7 +799,7 @@ class TestModMrf(unittest.TestCase):
             xml_check = False
         self.assertTrue(xml_check, 'GetCapabilities response is not a valid XML file. URL: ' + req_url)
 
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'mod_mrf_test_data/wmts_endpoint/1.0.0/WMTSCapabilities.xml'))
+        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/wmts_endpoint/1.0.0/WMTSCapabilities.xml'))
         refXMLroot = refXMLtree.getroot()
         refXMLdict = XmlDictConfig(refXMLroot)
 
@@ -821,7 +826,7 @@ class TestModMrf(unittest.TestCase):
             xml_check = False
         self.assertTrue(xml_check, 'GetCapabilities response is not a valid XML file. URL: ' + req_url)
 
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'mod_mrf_test_data/GetCapabilities_TWMS.xml'))
+        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/GetCapabilities_TWMS.xml'))
         refXMLroot = refXMLtree.getroot()
         refXMLdict = XmlDictConfig(refXMLroot)
 
@@ -848,7 +853,7 @@ class TestModMrf(unittest.TestCase):
             xml_check = False
         self.assertTrue(xml_check, 'GetTileService response is not a valid XML file. URL: ' + req_url)
 
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'mod_mrf_test_data/GetTileService.xml'))
+        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/GetTileService.xml'))
         refXMLroot = refXMLtree.getroot()
         refXMLdict = XmlDictConfig(refXMLroot)
 
@@ -877,7 +882,7 @@ class TestModMrf(unittest.TestCase):
                 else:
                     param_split[0] = param_split[0].lower()
                 test_params.append('='.join(param_split))
-            req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?' + '&'.join(test_params)
+            req_url = 'http://localhost/mrf_endpoint/wmts.cgi?' + '&'.join(test_params)
             if DEBUG:
                 print 'Trying URL: ' + req_url
             check_result = check_tile_request(req_url, ref_hash)
@@ -896,7 +901,7 @@ class TestModMrf(unittest.TestCase):
         for _ in range(20):
             random.shuffle(params)
             param_string = '&'.join(params)
-            req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?' + param_string
+            req_url = 'http://localhost/mrf_endpoint/wmts.cgi?' + param_string
             if DEBUG:
                 print 'Trying URL: ' + req_url
             check_result = check_tile_request(req_url, ref_hash)
@@ -914,7 +919,7 @@ class TestModMrf(unittest.TestCase):
         for i in range(len(params)):
             param_list = list(params)
             param_list.pop(i)
-            req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?request=GetTile&time=default&' + '&'.join(param_list)
+            req_url = 'http://localhost/mrf_endpoint/wmts.cgi?request=GetTile&time=default&' + '&'.join(param_list)
             response_code = 400
             response_value = 'MissingParameterValue'
             if DEBUG:
@@ -928,27 +933,27 @@ class TestModMrf(unittest.TestCase):
         response_value = 'InvalidParameterValue'
         invalid_parameter_urls = (
             # Bad SERVICE value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&Service=bad_value',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&Service=bad_value',
             # Bad VERSION value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&Version=bad_value',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&Version=bad_value',
             # Bad LAYER value
-            'http://localhost/onearth/test/wmts/wmts.cgi?tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&layer=bad_layer_value',
+            'http://localhost/mrf_endpoint/wmts.cgi?tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&layer=bad_layer_value',
             # Bad STYLE value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&style=bad_value',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&style=bad_value',
             # Bad FORMAT value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&TileMatrix=0&TileCol=0&TileRow=0&time=default&Format=fake_image',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&TileMatrix=0&TileCol=0&TileRow=0&time=default&Format=fake_image',
             # Bad TILEMATRIXSET value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&tilematrixset=fake_tilematrixset',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default&tilematrixset=fake_tilematrixset',
             # Bad (non-positive integer) TILEMATRIX value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileCol=0&TileRow=0&time=default&TileMatrix=-20',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileCol=0&TileRow=0&time=default&TileMatrix=-20',
             # Bad (non-positive integer) TILEROW value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&time=default&TileRow=-20',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&time=default&TileRow=-20',
             # Bad (non-positive integer) TILECOL value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileRow=0&time=default&TileCol=-20',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileRow=0&time=default&TileCol=-20',
             # Invalid TILEMATRIX value
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileCol=0&TileRow=0&time=default&TileMatrix=20',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileCol=0&TileRow=0&time=default&TileMatrix=20',
             # Invalid TIME format
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-290'
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-290'
         )
         for req_url in invalid_parameter_urls:
             if DEBUG:
@@ -960,7 +965,7 @@ class TestModMrf(unittest.TestCase):
         # OperationNotSupported tests
         response_code = 501
         response_value = 'OperationNotSupported'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetLegendGraphic&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetLegendGraphic&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default'
         if DEBUG:
             print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
         check_code = check_response_code(req_url, response_code, response_value)
@@ -972,9 +977,9 @@ class TestModMrf(unittest.TestCase):
         response_value = 'TileOutOfRange'
         tile_outofrange_urls = (
             # TileCol out of range
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=50&TileRow=0&time=default',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=50&TileRow=0&time=default',
             # TileRow out of range
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=50&time=default'
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=50&time=default'
         )
         for req_url in tile_outofrange_urls:
             if DEBUG:
@@ -986,9 +991,9 @@ class TestModMrf(unittest.TestCase):
         # Test if empty tile is served for out of time bounds request
         ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
         empty_urls = (  # Date before range
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-01-01',
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-01-01',
             # Date after range
-            'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-03-07'
+            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-03-07'
         )
         for url in empty_urls:
             if DEBUG:
@@ -998,7 +1003,7 @@ class TestModMrf(unittest.TestCase):
 
         # Test if unknown parameter is ignored
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-29&twoplustwo=five'
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-02-29&twoplustwo=five'
         if DEBUG:
             print 'Using URL: {0}, expecting bad parameter will be ignored'
         check_result = check_tile_request(req_url, ref_hash)
@@ -1015,7 +1020,7 @@ class TestModMrf(unittest.TestCase):
         for i in range(len(params)):
             param_list = list(params)
             param_list.pop(i)
-            req_url = 'http://localhost/onearth/test/wmts/' + '/'.join(param_list)
+            req_url = 'http://localhost/mrf_endpoint/' + '/'.join(param_list)
             response_code = 404
             #response_value = 'MissingParameterValue'
             response_value = 'Not Found'
@@ -1030,23 +1035,23 @@ class TestModMrf(unittest.TestCase):
         response_value = 'InvalidParameterValue'
         invalid_parameter_urls = (
             # Bad LAYER value
-            'http://localhost/onearth/test/wmts/bad_layer_value/default/default/EPSG4326_16km/0/0/0.jpeg',
+            'http://localhost/mrf_endpoint/bad_layer_value/default/default/EPSG4326_16km/0/0/0.jpeg',
             # Bad STYLE value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/bad_value/EPSG4326_16km/0/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/bad_value/EPSG4326_16km/0/0/0.jpeg',
             # Bad FORMAT value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/0/0/0.png',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/0.png',
             # Bad TILEMATRIXSET value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/fake_tilematrixset/0/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/fake_tilematrixset/0/0/0.jpeg',
             # Bad (non-positive integer) TILEMATRIX value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/-20/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/-20/0/0.jpeg',
             # Bad (non-positive integer) TILEROW value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/0/-20/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/-20/0.jpeg',
             # Bad (non-positive integer) TILECOL value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/0/0/-20.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/-20.jpeg',
             # Invalid TILEMATRIX value
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/EPSG4326_16km/20/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/20/0/0.jpeg',
             # Invalid TIME format
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/2012-02-290/EPSG4326_16km/0/0/0.jpeg'
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-290/EPSG4326_16km/0/0/0.jpeg'
         )
         for req_url in invalid_parameter_urls:
             #if DEBUG:
@@ -1085,9 +1090,9 @@ class TestModMrf(unittest.TestCase):
         response_value = 'TileOutOfRange'
         tile_outofrange_urls = (
             # TileCol out of range
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/default/EPSG4326_16km/0/50/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/50/0.jpeg',
             # TileRow out of range
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/default/EPSG4326_16km/0/0/50.jpeg'
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/50.jpeg'
         )
         for req_url in tile_outofrange_urls:
             if DEBUG:
@@ -1099,9 +1104,9 @@ class TestModMrf(unittest.TestCase):
         # Test if empty tile is served for out of time bounds request
         ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
         empty_urls = (  # Date before range
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/2012-01-01/EPSG4326_16km/0/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-01-01/EPSG4326_16km/0/0/0.jpeg',
             # Date after range
-            'http://localhost/onearth/test/wmts/test_weekly_jpg/default/2012-03-07/EPSG4326_16km/0/0/0.jpeg'
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-03-07/EPSG4326_16km/0/0/0.jpeg'
         )
         for url in empty_urls:
             if DEBUG:
@@ -1111,7 +1116,7 @@ class TestModMrf(unittest.TestCase):
 
         # Test if unknown parameter is ignored
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/wmts/test_weekly_jpg/default/2012-02-29/EPSG4326_16km/0/0/0/five.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-29/EPSG4326_16km/0/0/0/five.jpeg'
         if DEBUG:
             print 'Using URL: {0}, expecting bad parameter will be ignored'
         check_result = check_tile_request(req_url, ref_hash)
@@ -1149,7 +1154,7 @@ class TestModMrf(unittest.TestCase):
                     xml_check = False
                     self.assertTrue(xml_check, 'Missing BBOX response is not a valid XML file. URL: ' + req_url)
 
-                refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'mod_mrf_test_data/MissingBBOX.xml'))
+                refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/MissingBBOX.xml'))
                 refXMLroot = refXMLtree.getroot()
                 refXMLdict = XmlDictConfig(refXMLroot)
 
@@ -1468,7 +1473,7 @@ class TestModMrf(unittest.TestCase):
 
     def test_mvt_layer(self):
         layer_name = 'mvt_test'
-        req_url = 'http://localhost/onearth/test/wmts/wmts.cgi?layer={0}&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application%2Fx-protobuf;type=mapbox-vector&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-01-01'.format(layer_name)
+        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer={0}&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application%2Fx-protobuf;type=mapbox-vector&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-01-01'.format(layer_name)
         if DEBUG:
             print '\nTesting for Valid MVT Tile'
         mvt_tile = get_url(req_url)
