@@ -84,7 +84,7 @@ class TestModMrf(unittest.TestCase):
         run_command('redis-cli -n 0 SET layer:test_daily_png:default "2012-02-29"')
         run_command('redis-cli -n 0 SADD layer:test_daily_png:periods "2012-02-29/2012-02-29/P1D"')
         run_command('redis-cli -n 0 DEL layer:test_legacy_subdaily_jpg')
-        run_command('redis-cli -n 0 SET layer:test_legacy_subdaily_jpg:default "2012-02-29T12:00:00Z"')
+        run_command('redis-cli -n 0 SET layer:test_legacy_subdaily_jpg:default "2012-02-29T14:00:00Z"')
         run_command('redis-cli -n 0 SADD layer:test_legacy_subdaily_jpg:periods "2012-02-29T12:00:00Z/2012-02-29T14:00:00Z/PT2H"')
         run_command('redis-cli -n 0 DEL layer:test_nonyear_jpg')
         run_command('redis-cli -n 0 SET layer:test_nonyear_jpg:default "2012-02-29"')
@@ -92,43 +92,92 @@ class TestModMrf(unittest.TestCase):
         run_command('redis-cli -n 0 DEL layer:test_weekly_jpg')
         run_command('redis-cli -n 0 SET layer:test_weekly_jpg:default "2012-02-29"')
         run_command('redis-cli -n 0 SADD layer:test_weekly_jpg:periods "2012-02-22/2012-02-29/P7D"')
+        run_command('redis-cli -n 0 DEL layer:snap_test_1a')
+        run_command('redis-cli -n 0 SET layer:snap_test_1a:default "2016-02-29"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_1a:periods "2015-01-01/2016-12-31/P1D"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_2a')
+        run_command('redis-cli -n 0 SET layer:snap_test_2a:default "2015-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_2a:periods "2015-01-01/2015-01-10/P1D"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_2a:periods "2015-01-12/2015-01-31/P1D"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_3a')
+        run_command('redis-cli -n 0 SET layer:snap_test_3a:default "2015-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_3a:periods "2015-01-01/2016-01-01/P1M"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_3a:periods "1948-01-01/1948-03-01/P1M"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_3b')
+        run_command('redis-cli -n 0 SET layer:snap_test_3b:default "2015-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_3b:periods "2015-01-01/2016-01-01/P3M"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_3c')
+        run_command('redis-cli -n 0 SET layer:snap_test_3c:default "2000-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_3c:periods "1990-01-01/2016-01-01/P1Y"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_3d')
+        run_command('redis-cli -n 0 SET layer:snap_test_3d:default "2010-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_3d:periods "2010-01-01/2012-03-11/P8D"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_4a')
+        run_command('redis-cli -n 0 SET layer:snap_test_4a:default "2000-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4a:periods "2000-01-01/2000-06-01/P1M"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4a:periods "2000-07-03/2000-07-03/P1M"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4a:periods "2000-08-01/2000-12-01/P1M"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_4b')
+        run_command('redis-cli -n 0 SET layer:snap_test_4b:default "2001-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4b:periods "2001-01-01/2001-12-27/P8D"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4b:periods "2002-01-01/2002-12-27/P8D"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_4c')
+        run_command('redis-cli -n 0 SET layer:snap_test_4c:default "2010-01-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_4c:periods "2010-01-01/2010-01-01/P385D"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_5a')
+        run_command('redis-cli -n 0 SET layer:snap_test_5a:default "2011-12-01"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_5a:periods "2002-12-01/2011-12-01/P1Y"')
+
+        run_command('redis-cli -n 0 DEL layer:snap_test_year_boundary')
+        run_command('redis-cli -n 0 SET layer:snap_test_year_boundary:default "2000-09-03"')
+        run_command('redis-cli -n 0 SADD layer:snap_test_year_boundary:periods "2000-09-03/2000-09-03/P144D"')
+
         run_command('redis-cli -n 0 SAVE')
 
         # Set some handy constant values
         self.tile_hashes = {'3d5280b13cbabc41676973d26844f310': '1948-03-01',
-                            '210964547845bbeb357f62c214128215': '1990-01-01',
-                            '403705d851af424b3bf9cafbbf869d0c': '2000-01-01',
-                            '4832d6edeed31fad0bd59bbc26d92275': '2000-06-01',
+                            '40d78f32acdfd866a8b0faad24fda69b': '1990-01-01',
+                            'd5ae95bd567813c3e431b55de12f5d3e': '2000-01-01',
+                            '57ef9f162328774860ef0e8506a77ebe': '2000-06-01',
                             '7ea2038a74af2988dc432a614ec94187': '2000-07-03',
                             '03b3cc7adc929dd605d617b7066b30ae': '2000-08-01',
-                            '4f24774e71560e15b5ed43fcace2cb29': '2000-09-03',
+                            '32d82aa3c58c3b1053edd7d63a98864e': '2000-09-03',
                             'fd9e3aa7c12fbf823bd339b92920784e': '2000-12-01',
-                            '24f90bd216f6b7ee25501155fcc8ece4': '2001-01-01',
-                            '3d12e06c60b379efc41f4b8021ce1e29': '2001-05-09',
+                            'e96f02519c5eeb7f9caf5486385152e4': '2001-01-01',
+                            'a512a061f962db7713cf3f99ef9b109a': '2001-05-09',
                             'e16d97b41cbb408d2a285788dfc9e3b8': '2002-01-01',
                             'b64066bafe897f0d2c0fc4a41ae7e052': '2002-12-27',
-                            '21634316da8d6e0af3ee4f24643bd72c': '2002-12-01',
+                            '1a4769087f67f1b6cc8d6e43f5595929': '2002-12-01',
                             'b3639da9334ca5c13072012f9422a03c': '2003-12-01',
                             '172ba954906b3d4f5d6583b3ad88460f': '2004-12-01',
-                            'f4426ab405ce748b57b34859b3811bf6': '2005-01-01',
+                            'baf3bb568373cb41e88674073b841f18': '2005-01-01',
                             '65e2446b2f779b963d0127f374a36fba': '2005-12-01',
                             'faf5788ab8e006bbcfe18be80d472840': '2006-12-01',
                             'd834056e48a95e39f55401eb61f710cd': '2007-12-01',
-                            '9a3cf29a5df271c41eefc5c989fd690d': '2008-01-01',
+                            '6bb1a6e9d56ef5aec03a377d923512d9': '2008-01-01',
                             'd03e3e3cdfef2b6e3d1870f26a88fe53': '2008-12-01',
                             '59692a541429c929117c854fe9e423c9': '2009-12-01',
-                            '84eba8cdbb26444dbc97e119c0b76728': '2010-01-01',
-                            '91206f8c5a4f6fcdcab366ea00a1f53c': '2010-01-09',
+                            '84777459ff0e823c01fb534c5a3c1648': '2010-01-01',
+                            '66efbcc6df6d087df89dfebff1bfafe2': '2010-01-09',
                             '9aa3115cde41a8b9c68433741d98a8b4': '2010-12-01',
                             'dae12a917a5d672c4cce4fdaf4788bf3': '2011-12-01',
                             '5346e958989b57c45919604ecf909f43': '2012-03-11',
-                            '92e5d5eef4dc6866b636a49bfae3e463': '2015-01-01',
-                            '5d91fa0c5273b2b58c486a15c91b2e78': '2015-01-02',
-                            '81b8d855e38e6783f14899ff89a2c878': '2015-10-01',
-                            '7f2992ac0986784c28d93840b1e984c4': '2016-02-29',
+                            '170b8cce84c29664e62f732f00942619': '2015-01-01',
+                            'aad46b0afac105b93b00fc95c95c7c30': '2015-01-02',
+                            '51f485fa236d8b26a1d7c81a9ffc9d4f': '2015-10-01',
+                            '91f3e175621955796245d2d0a6589aad': '2016-02-29',
                             '1571c4d601dfd871e7680e279e6fd39c': '2015-01-12',
                             'b69307895d6cb654b98d247d710dd806': '2015-12-01',
-                            'ba366ccd45a8f1ae0ed2b65cf67b9787': '2016-01-01',
+                            '8f6b00c6a817ca6907882d26c50b8dec': '2016-01-01',
                             '5e11f1220da2bb6f92d3e1c998f20bcf': 'black'}
 
         # URL that will be used to create the snap test requests
@@ -197,7 +246,7 @@ class TestModMrf(unittest.TestCase):
         2B. Request current (no time) PNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PNG tile via WMTS REST'
@@ -223,7 +272,7 @@ class TestModMrf(unittest.TestCase):
         3B. Request current (no time) PPNG tile via WMTS REST
         """
         ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/EPSG4326_16km/0/0/0.png'
+        req_url = 'http://localhost/mrf_endpoint/test_daily_png/default/default/EPSG4326_16km/0/0/0.png'
         # Debug message (if DEBUG is set)
         if DEBUG:
             print '\nTesting: Request current (no time) PPNG tile via WMTS REST'
@@ -306,42 +355,6 @@ class TestModMrf(unittest.TestCase):
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'Current (TIME=default) WMTS REST PPNG Tile Request does not match what\'s expected. URL: ' + req_url)
 
-    def test_request_twms_notime_jpg(self):
-        """
-        7. Request current (no time) JPEG tile via TWMS
-        """
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request current (no TIME) JPG tile via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS current JPG request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_notime_png(self):
-        """
-        8. Request current (no time) PNG tile via TWMS
-        """
-        ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_daily_png&amp;srs=EPSG:4326&amp;format=image%2Fpng&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request current (no TIME) PNG tile via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS current PNG request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_notime_ppng(self):
-        """
-        9. Request current (no time) PPNG tile via TWMS
-        """
-        ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_daily_png&amp;srs=EPSG:4326&amp;format=image%2Fpng&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request current (no TIME) PPNG tile via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS current PPNG request does not match what\'s expected. URL: ' + req_url)
-
     # REQUEST WITH DATE/TIME AND STATIC TESTS
 
     def test_request_wmts_date_from_year_layer(self):
@@ -368,18 +381,6 @@ class TestModMrf(unittest.TestCase):
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) date request from "year" layer does not match what\'s expected. URL: ' + req_url)
 
-    def test_request_twms_date_from_year_layer(self):
-        """
-        10C. Request tile with date from "year" layer via TWMS
-        """
-        ref_hash = '9b38d90baeeebbcadbc8560a29481a5e'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90&TIME=2012-02-22'
-        if DEBUG:
-            print '\nTesting: Request tile with date from "year" layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS date request from "year" layer does not match what\'s expected. URL: ' + req_url)
-
     def test_request_wmts_date_from_noyear_layer(self):
         """
         11. Request tile with date  from "non-year" layer via WMTS
@@ -403,18 +404,6 @@ class TestModMrf(unittest.TestCase):
             print 'URL: ' + req_url
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) date request from "non-year" layer does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_date_from_noyear_layer(self):
-        """
-        11C. Request tile with date from "non-year" layer via TWMS
-        """
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_nonyear_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90&TIME=2012-02-29'
-        if DEBUG:
-            print '\nTesting: Request tile with date from "non-year layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS date request from "non-year" layer does not match what\'s expected. URL: ' + req_url)
 
     def test_request_wmts_legacy_datetime_from_year_layer(self):
         """
@@ -440,51 +429,6 @@ class TestModMrf(unittest.TestCase):
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) legacy subdaily request does not match what\'s expected. URL: ' + req_url)
 
-    def test_request_twms_legacy_datetime_from_year_layer(self):
-        """
-        12C. Request tile with date and time (sub-daily) from "year" layer via TWMS
-        """
-        ref_hash = '5a39c4e335d05295160a7bec4961002d'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_legacy_subdaily_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90&TIME=2012-02-29T12:00:00Z'
-        if DEBUG:
-            print '\nTesting: Request tile with date and time (legacy sub-daily) from "year" layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS legacy subdaily request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_wmts_year_zlevel(self):
-        """
-        13. Request tile with date and time (z-level) from "year" layer via WMTS
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-02-29T16:00:00Z'
-        if DEBUG:
-            print '\nTesting: Request tile with date and time (z-level) from "year" layer via WMTS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'WMTS Z-Level JPG Tile Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_wmts_rest_year_zlevel(self):
-        """
-        13B. Request tile with date and time (z-level) from "year" layer via WMTS (REST)
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/mrf_endpoint/test_zindex_jpg/default/2012-02-29T16:00:00Z/EPSG4326_16km/0/0/0.jpeg'
-        if DEBUG:
-            print '\nTesting: Request tile with date and time (z-level) from "year" layer via WMTS (REST)'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'WMTS (REST) Z-Level JPG Tile Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_year_zlevel(self):
-        """
-        13C. Request tile with date and time (z-level) from "year" layer via TWMS
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&layers=test_zindex_jpg&srs=EPSG:4326&format=image%2Fjpeg&styles=&time=2012-02-29T16:00:00Z&width=512&height=512&bbox=-180,0,-90,90'
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS Z-Level JPEG Tile request does not match what\'s expected. URL: ' + req_url)
-
     def test_request_wmts_nodate_from_year_layer(self):
         """
         14. Request tile with no date from "year" layer via WMTS
@@ -502,24 +446,12 @@ class TestModMrf(unittest.TestCase):
         14B. Request tile with no date from "year" layer via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) no date request from "year" layer does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_nodate_from_year_layer(self):
-        """
-        14C. Request tile with no date from "year" layer via TWMS
-        """
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request tile with no date from "year" layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS no date request from "year" layer does not match what\'s expected. URL: ' + req_url)
 
     def test_request_wmts_nodate_from_noyear_layer(self):
         """
@@ -538,24 +470,12 @@ class TestModMrf(unittest.TestCase):
         15B. Request tile with no date from "non-year" layer via WMTS (REST)
         """
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_nonyear_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date from "non-year layer via WMTS (REST)'
             print 'URL: ' + req_url
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) no date request from "non-year" layer does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_nodate_from_noyear_layer(self):
-        """
-        15C. Request tile with no date from "non-year" layer via TWMS
-        """
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_nonyear_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request tile with no date from "non-year layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS no date request from "non-year" layer does not match what\'s expected. URL: ' + req_url)
 
     def test_request_wmts_legacy_nodate_from_year_layer(self):
         """
@@ -574,57 +494,12 @@ class TestModMrf(unittest.TestCase):
         16B. Request tile with no date and time (sub-daily) from "year" layer via WMTS (REST)
         """
         ref_hash = '3affdef85d2c83cbbb9d010296f1b5f2' 
-        req_url = 'http://localhost/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/0/0/0.jpeg'
+        req_url = 'http://localhost/mrf_endpoint/test_legacy_subdaily_jpg/default/default/EPSG4326_16km/0/0/0.jpeg'
         if DEBUG:
             print '\nTesting: Request tile with no date and time (legacy sub-daily) from "year" layer via WMTS (REST)'
             print 'URL: ' + req_url
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) legacy no date and time subdaily request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_legacy_nodate_from_year_layer(self):
-        """
-        16C. Request tile with no date and time (sub-daily) from "year" layer via TWMS
-        """
-        ref_hash = '3affdef85d2c83cbbb9d010296f1b5f2' 
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_legacy_subdaily_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request tile with no date and time (legacy sub-daily) from "year" layer via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS legacy no date and time subdaily request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_wmts_nodate_year_zlevel(self):
-        """
-        17. Request tile with no date and time (z-level) from "year" layer via WMTS
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_zindex_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0'
-        if DEBUG:
-            print '\nTesting: Request tile with no date and time (z-level) from "year" layer via WMTS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'WMTS Z-Level JPG Tile Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_wmts_rest_nodate_year_zlevel(self):
-        """
-        17B. Request tile with no date and time (z-level) from "year" layer via WMTS (REST)
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/mrf_endpoint/test_zindex_jpg/default/EPSG4326_16km/0/0/0.jpeg'
-        if DEBUG:
-            print '\nTesting: Request tile with no date and time (z-level) from "year" layer via WMTS (REST)'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'WMTS (REST) Z-Level JPG Tile Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_nodate_year_zlevel(self):
-        """
-        17C. Request tile with no date and time (z-level) from "year" layer via TWMS
-        """
-        ref_hash = '36bb79a33dbbe6173990103a8d6b67cb'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&layers=test_zindex_jpg&srs=EPSG:4326&format=image%2Fjpeg&styles=&width=512&height=512&bbox=-180,0,-90,90'
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS Z-Level no date and time JPEG Tile request does not match what\'s expected. URL: ' + req_url)
 
     def test_request_wmts_static_notime(self):
         """
@@ -649,105 +524,6 @@ class TestModMrf(unittest.TestCase):
             print 'URL: ' + req_url
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'WMTS (REST) static notime request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_static_notime(self):
-        """
-        18C. Request tile from static layer with no time via TWMS
-        """
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&layers=test_static_jpg&srs=EPSG:4326&format=image%2Fjpeg&styles=&width=512&height=512&bbox=-180,-198,108,90'
-        if DEBUG:
-            print '\nTesting: Request tile from static layer with no time via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS static notime request does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_twms_date_png(self):
-        """
-        19. Request tile with date via TWMS
-        """
-        ref_hash = '944c7ce9355cb0aa29930dc16ab03db6'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_daily_png&amp;srs=EPSG:4326&amp;format=image%2Fpng&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90&TIME=2012-02-29'
-        if DEBUG:
-            print '\nTesting: Request tile with date via TWMS'
-            print 'URL: ' + req_url
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'TWMS PNG request with date does not match what\'s expected. URL: ' + req_url)
-
-    def test_request_date_kml(self):
-        """
-        20. Request tile with date via KML
-        """
-        # Note that we can't directly test the KML against a hash as the generated file changes based on the server settings
-        req_url = 'http://localhost/onearth/test/twms/kmlgen.cgi?layers=test_weekly_jpg&time=2012-02-29'
-        search_string = '<name>2012-02-29 test_weekly_jpg</name>'
-        if DEBUG:
-            print '\nTesting: Request tile with date via KML'
-            print 'URL: ' + req_url
-
-        response = get_url(req_url)
-        
-        # Check if the response is valid XML
-        try:
-            xml.dom.minidom.parse(response)
-            xml_check = True
-        except xml.parsers.expat.ExpatError:
-            xml_check = False
-        self.assertTrue(xml_check, 'KML response is not a valid XML file. URL: ' + req_url)
-
-        # Check if layer name is in KML result
-        check_result = all(line for line in response if search_string in line)
-        self.assertTrue(check_result, 'Layer name not found in KML date request. URL: ' + req_url)
-
-    def test_request_date_time_kml(self):
-        """
-        21. Request tile with date and time via KML
-        """
-        # Note that we can't directly test the KML against a hash as the generated file changes based on the server settings
-        req_url = 'http://localhost/onearth/test/twms/kmlgen.cgi?layers=test_weekly_jpg&time=2012-02-29T12:00:00Z'
-        search_string = '<name>2012-02-29 test_weekly_jpg</name>'
-        if DEBUG:
-            print '\nTesting: Request tile with date and time via KML'
-            print 'URL: ' + req_url
-
-        response = get_url(req_url)
-        
-        # Check if the response is valid XML
-        try:
-            xml.dom.minidom.parse(response)
-            xml_check = True
-        except xml.parsers.expat.ExpatError:
-            xml_check = False
-        self.assertTrue(xml_check, 'KML response is not a valid XML file. URL: ' + req_url)
-
-        # Check if layer name is in KML result
-        check_result = all(line for line in response if search_string in line)
-        self.assertTrue(check_result, 'Layer name not found in KML date and time request. URL: ' + req_url)
-
-    def test_request_date_range_kml(self):
-        """
-        22. Request tile with date range via KML
-        """
-        # Note that we can't directly test the KML against a hash as the generated file changes based on the server settings
-        req_url = 'http://localhost/onearth/test/twms/kmlgen.cgi?layers=test_weekly_jpg&time=R10/2012-02-29/P1D'
-        search_string = '<name>2012-02-29 test_weekly_jpg</name>'
-        if DEBUG:
-            print '\nTesting: Request tile with date range via KML'
-            print 'URL: ' + req_url
-
-        response = get_url(req_url)
-        
-        # Check if the response is valid XML
-        try:
-            xml.dom.minidom.parse(response)
-            xml_check = True
-        except xml.parsers.expat.ExpatError:
-            xml_check = False
-        self.assertTrue(xml_check, 'KML response is not a valid XML file. URL: ' + req_url)
-
-        # Check if layer name is in KML result
-        check_result = all(line for line in response if search_string in line)
-        self.assertTrue(check_result, 'Layer name not found in KML date range request. URL: ' + req_url)
 
     # GETCAPABILITIES AND GETTILESERVICE REQUEST TESTS
 
@@ -804,60 +580,6 @@ class TestModMrf(unittest.TestCase):
 
         check_result = check_dicts(XMLdict, refXMLdict)
         self.assertTrue(check_result, 'WTMTS (REST) Get Capabilities Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_twms_get_capabilities(self):
-        """
-        25. Request TWMS GetCapabilities
-        """
-        ref_hash = 'd2536cb2c0681c56b005eb9d60336326'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?Request=GetCapabilities'
-        if DEBUG:
-            print '\nTesting TWMS GetCapablities'
-            print 'URL: ' + req_url
-        response = get_url(req_url)
-
-        # Check if the response is valid XML
-        try:
-            XMLroot = ElementTree.XML(response.read())
-            XMLdict = XmlDictConfig(XMLroot)
-            xml_check = True
-        except:
-            xml_check = False
-        self.assertTrue(xml_check, 'GetCapabilities response is not a valid XML file. URL: ' + req_url)
-
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/GetCapabilities_TWMS.xml'))
-        refXMLroot = refXMLtree.getroot()
-        refXMLdict = XmlDictConfig(refXMLroot)
-
-        check_result = check_dicts(XMLdict, refXMLdict)
-        self.assertTrue(check_result, 'TWMS Get GetCapabilities Request does not match what\'s expected. URL: ' + req_url)
-
-    def test_twms_get_tile_service(self):
-        """
-        26. Request TWMS GetTileService
-        """
-        ref_hash = '7555d5ad3cca96aa8cbc8a36f5e04f19'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?Request=GetTileService'
-        if DEBUG:
-            print '\nTesting TWMS GetTileService'
-            print 'URL: ' + req_url
-        response = get_url(req_url)
-
-        # Check if the response is valid XML
-        try:
-            XMLroot = ElementTree.XML(response.read())
-            XMLdict = XmlDictConfig(XMLroot)
-            xml_check = True
-        except:
-            xml_check = False
-        self.assertTrue(xml_check, 'GetTileService response is not a valid XML file. URL: ' + req_url)
-
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/GetTileService.xml'))
-        refXMLroot = refXMLtree.getroot()
-        refXMLdict = XmlDictConfig(refXMLroot)
-
-        check_result = check_dicts(XMLdict, refXMLdict)
-        self.assertTrue(check_result, 'TWMS Get GetTileService Request does not match what\'s expected. URL: ' + req_url)
 
     # REQUEST SYNTAX TESTS (capitalization, parameter ordering, error handling, REST)
 
@@ -1020,9 +742,9 @@ class TestModMrf(unittest.TestCase):
             param_list = list(params)
             param_list.pop(i)
             req_url = 'http://localhost/mrf_endpoint/' + '/'.join(param_list)
-            response_code = 404
+            response_code = 400
             #response_value = 'MissingParameterValue'
-            response_value = 'Not Found'
+            response_value = 'Bad Request'
             if DEBUG:
                 print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
             check_code = check_response_code(req_url, response_code, response_value)
@@ -1120,112 +842,6 @@ class TestModMrf(unittest.TestCase):
             print 'Using URL: {0}, expecting bad parameter will be ignored'
         check_result = check_tile_request(req_url, ref_hash)
         self.assertTrue(check_result, 'Bad parameter request is not ignored. URL: ' + url)
-
-    def test_twms_error_handling(self):
-        """
-        31. TWMS requests
-        """
-        # MissingParameterValue test
-        params = ('layers=test_weekly_jpg', 'srs=EPSG:4326', 'width=512', 'height=512', 'bbox=-180,-198,108,90')
-        if DEBUG:
-            print '\nTesting TWMS Error Handling'
-        for i in range(len(params)):
-            param_list = list(params)
-            param_list.pop(i)
-            req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&time=default&format=image%2Fjpeg&styles=&' + '&'.join(param_list)
-
-            # check for empty tile
-            ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
-            if DEBUG:
-                print 'Using URL: {0}, expecting empty tile'.format(req_url)
-            if 'bbox' in req_url:
-                check_result = check_tile_request(req_url, ref_hash)
-            else:
-                # Validate XML for Missing BBOX
-                response = get_url(req_url)
-
-                # Check if the response is valid XML
-                try:
-                    XMLroot = ElementTree.XML(response.read())
-                    XMLdict = XmlDictConfig(XMLroot)
-                    xml_check = True
-                except:
-                    xml_check = False
-                    self.assertTrue(xml_check, 'Missing BBOX response is not a valid XML file. URL: ' + req_url)
-
-                refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/MissingBBOX.xml'))
-                refXMLroot = refXMLtree.getroot()
-                refXMLdict = XmlDictConfig(refXMLroot)
-
-                check_result = check_dicts(XMLdict, refXMLdict)
-            self.assertTrue(check_result, 'The TWMS response for Missing Parameter does not match what\'s expected. URL: ' + req_url)
-
-        # InvalidParameterValue tests
-        invalid_parameter_urls = (
-            # Bad LAYER value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=bad_layer_value&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90',
-            # Bad STYLE value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=bad_value&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90',
-            # Bad SRS value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=fake_tilematrixset&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90',
-            # Bad (non-positive integer) WIDTH value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=-512&amp;height=512&amp;bbox=-180,-198,108,90',
-            # Bad (non-positive integer) HEIGHT value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=-512&amp;bbox=-180,-198,108,90',
-            # Bad (large integer) BBOX value
-            'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,1080,900'
-        )
-        for req_url in invalid_parameter_urls:
-            # check for empty tile
-            ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
-            if DEBUG:
-                print 'Using URL: {0}, expecting empty tile'.format(req_url)
-            check_result = check_tile_request(req_url, ref_hash)
-            self.assertTrue(check_result, 'The TWMS response for Invalid Parameter does not match what\'s expected. URL: ' + req_url)
-
-        # Test Invalid time format for Bad Time
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fjpeg&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90&amp;time=2012-02-290'
-        if DEBUG:
-            print 'Using URL: {0}, expecting XML error message'.format(req_url)
-            response = get_url(req_url)
-            # Check if the response is valid XML
-            try:
-                XMLroot = ElementTree.XML(response.read())
-                XMLdict = XmlDictConfig(XMLroot)
-                xml_check = True
-            except:
-                xml_check = False
-            self.assertTrue(xml_check, 'Invalid TIME response is not a valid XML file. URL: ' + req_url)   
-        
-        # Test if PNG empty tile is served for Missing FORMAT Value
-        ref_hash = '8dd7e330d7ab0ead5ee71e7179c170d1'
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print 'Using URL: {0}, expecting empty transparent tile'.format(req_url)
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'The TWMS response for Missing FORMAT does not match what\'s expected. URL: ' + req_url)
-        
-        # Test format is Invalid for Bad FORMAT Value
-        req_url = 'http://localhost/onearth/test/twms/twms.cgi?request=GetMap&amp;layers=test_weekly_jpg&amp;srs=EPSG:4326&amp;format=image%2Fblah&amp;styles=&amp;width=512&amp;height=512&amp;bbox=-180,-198,108,90'
-        if DEBUG:
-            print 'Using URL: {0}, expecting XML error message'.format(req_url)
-            response = get_url(req_url)
-            # Check if the response is valid XML
-            try:
-                XMLroot = ElementTree.XML(response.read())
-                XMLdict = XmlDictConfig(XMLroot)
-                xml_check = True
-            except:
-                xml_check = False
-            self.assertTrue(xml_check, 'Invalid FORMAT response is not a valid XML file. URL: ' + req_url)     
-
-            try:
-                exception = XMLroot.find('exceptionCode').text
-            except AttributeError:
-                exception = ''
-            check_str = exception.find('InvalidParameterValue')
-            error = 'The Invalid Format response does not match what\'s expected. URL: {0}'.format(req_url)
-            self.assertTrue(check_str, error)
 
     # DATE/TIME SNAPPING REQUESTS
 
@@ -1470,14 +1086,6 @@ class TestModMrf(unittest.TestCase):
             error = 'Snapping test for periods stretching across a year boundary requested date {0}, expected {1}, but got {2}. \nURL: {3}'.format(request_date, expected_date, response_date, req_url)
             self.assertEqual(expected_date, response_date, error)
 
-    def test_mvt_layer(self):
-        layer_name = 'mvt_test'
-        req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer={0}&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application%2Fx-protobuf;type=mapbox-vector&TileMatrix=0&TileCol=0&TileRow=0&TIME=2012-01-01'.format(layer_name)
-        if DEBUG:
-            print '\nTesting for Valid MVT Tile'
-        mvt_tile = get_url(req_url)
-        self.assertTrue(check_valid_mvt(mvt_tile), 'Output tile for MVT test layer is not a valid MVT tile.')
-
     # TEARDOWN
 
     @classmethod
@@ -1485,11 +1093,8 @@ class TestModMrf(unittest.TestCase):
         # Delete Apache test config
         os.remove(os.path.join('/etc/httpd/conf.d/' + os.path.basename(self.test_apache_config)))
         restart_apache()
-        os.remove(os.path.join(self.image_files_path, 'cache_all_wmts.config'))
-        os.remove(os.path.join(self.image_files_path, 'cache_all_twms.config'))
         if self.staging_path is not None:
             rmtree(self.staging_path) # make sure both service types are erased
-            rmtree(self.staging_path.replace('twms_cache_staging','wmts_cache_staging'))
 
 if __name__ == '__main__':
     # Parse options before running tests

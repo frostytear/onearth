@@ -691,7 +691,8 @@ def test_snap_request(hash_table, req_url):
     """
     tile = get_url(req_url)
     tile_hash = get_file_hash(tile)
-
+    # TORHT
+    print "tile_hash: " + tile_hash
     # Get the date that the particular hash is associated with
     tile_date = hash_table.get(tile_hash, '')
     return tile_date
