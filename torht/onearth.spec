@@ -197,7 +197,11 @@ rm -rf %{buildroot}
 %clean
 rm -rf %{buildroot}
 
+<<<<<<< HEAD
 %files
+=======
+#%files
+>>>>>>> -Adding configuration files for CI tests
 #%{_libdir}/httpd/modules/*
 #%{_libdir}/httpd/modules/mod_proxy/*
 #%defattr(-,gibs,gibs,775)
@@ -209,7 +213,11 @@ rm -rf %{buildroot}
 #%{_bindir}/oe_create_cache_config
 #%{_datadir}/cgicc
 
+<<<<<<< HEAD
 %post
+=======
+#%post
+>>>>>>> -Adding configuration files for CI tests
 #cd %{_datadir}/cgicc/
 #%{_datadir}/cgicc/configure --prefix=%{_prefix} --libdir=%{_libdir}
 #make install
@@ -221,13 +229,21 @@ rm -rf %{buildroot}
 #	ln -s "$file" `basename "$file"`
 #done
 
+<<<<<<< HEAD
 %postun
+=======
+#%postun
+>>>>>>> -Adding configuration files for CI tests
 #cd %{_libdir}/httpd/modules/
 #for file in %{_libdir}/httpd/modules/*.save; do
 #	mv "$file" "`basename "$file" .save`.so"
 #done
 
+<<<<<<< HEAD
 %files tools
+=======
+#%files tools
+>>>>>>> -Adding configuration files for CI tests
 #%defattr(755,root,root,-)
 #%{_bindir}/oe_generate_legend.py
 #%{_bindir}/oe_generate_empty_tile.py
@@ -242,12 +258,20 @@ rm -rf %{buildroot}
 #%{_bindir}/SLDtoColorMap.py
 #%{_datadir}/mpl
 
+<<<<<<< HEAD
 %post tools
+=======
+#%post tools
+>>>>>>> -Adding configuration files for CI tests
 #cd %{_datadir}/mpl/
 #python setup.py build
 #python setup.py install
 
+<<<<<<< HEAD
 %files config
+=======
+#%files config
+>>>>>>> -Adding configuration files for CI tests
 #%defattr(664,gibs,gibs,775)
 #%{_sysconfdir}/onearth/config/
 #%config(noreplace) %{_sysconfdir}/onearth/config/conf
@@ -307,8 +331,13 @@ rm -rf %{buildroot}
 #%defattr(-,gibs,gibs,-)
 #%{_datadir}/onearth/test
 
+<<<<<<< HEAD
 %post test
 pip install unittest2 unittest-xml-reporting==1.14.0 requests
+=======
+#%post test
+#pip install unittest2 unittest-xml-reporting==1.14.0 requests
+>>>>>>> -Adding configuration files for CI tests
 
 %changelog
 * Tue Feb 06 2018 Wei F. Yu <wei.f.yu@jpl.nasa.gov> - 1.3.1-4
