@@ -62,10 +62,7 @@ class TestModMrf(unittest.TestCase):
 #        wmts_configs = ('wmts_cache_configs', 'wmts_cache_staging', 'test_imagery/cache_all_wmts.config')
 #        twms_configs = ('twms_cache_configs', 'twms_cache_staging', 'test_imagery/cache_all_twms.config')
         self.image_files_path = os.path.join(testdata_path, 'test_imagery')
-<<<<<<< HEAD
         self.daily_png_config = os.path.join(testdata_path, 'layer_configs/test_mod_mrf_daily_png.config')
-=======
->>>>>>> -Adding configuration files for CI tests
         self.test_apache_config = os.path.join(testdata_path, 'mrf_test.conf')
         
 #        for template_dir, staging_dir, cache_config in (wmts_configs, twms_configs):
@@ -86,12 +83,9 @@ class TestModMrf(unittest.TestCase):
 #        self.staging_path = staging_path
 
         # Put the correct path into the Apache config (mrf_test.conf)
-<<<<<<< HEAD
         testconfig_path = os.path.join(testdata_path, 'mrf_endpoint/test_daily_png/default/EPSG4326_16km')
         file_text_replace(self.daily_png_config, os.path.join(testconfig_path, os.path.basename(self.daily_png_config)),
                           '{nonexistant_path}', testdata_path)
-=======
->>>>>>> -Adding configuration files for CI tests
         file_text_replace(self.test_apache_config, os.path.join('/etc/httpd/conf.d', os.path.basename(self.test_apache_config)),
                           '{nonexistant_path}', testdata_path)
         restart_apache()
