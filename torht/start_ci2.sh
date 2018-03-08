@@ -5,27 +5,27 @@ if [ ! -f /.dockerenv ]; then
   exit 1
 fi
 
-# Change default dir to /build/test/mod_mrf_test_data
+# Change default dir to /build/test/ci_tests
 cp httpd.conf /etc/httpd/conf/
 
 # Copy date_service config
 cp date_service/oe2_test_date_service.conf /etc/httpd/conf.d
-mkdir -p /build/test/mod_mrf_test_data/date_service
-cp date_service/date_service.lua /build/test/mod_mrf_test_data/date_service
+mkdir -p /build/test/ci_tests/date_service
+cp date_service/date_service.lua /build/test/ci_tests/date_service
 
 # Copy config stuff
-mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km
-cp -r ../src/test/mod_mrf_test_data/test_imagery /build/test/mod_mrf_test_data/
-cp ../src/test/mod_mrf_test_data/mrf_test.conf /etc/httpd/conf.d
-cp layer_configs/test_mod_mrf_daily_png*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
-mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km
-cp layer_configs/test_mod_mrf_legacy_subdaily_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/
-mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km
-cp layer_configs/test_mod_mrf_nonyear_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/
-mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_static_jpg/default/EPSG4326_16km
-cp layer_configs/test_mod_mrf_static_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_static_jpg/default/EPSG4326_16km/
-mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km
-cp layer_configs/test_mod_mrf_weekly_jpg*.config /build/test/mod_mrf_test_data/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/ci_tests/mrf_endpoint/test_daily_png/default/EPSG4326_16km
+cp -r ../src/test/ci_tests/test_imagery /build/test/ci_tests/
+cp ../src/test/ci_tests/mrf_test.conf /etc/httpd/conf.d
+cp layer_configs/test_mod_mrf_daily_png*.config /build/test/ci_tests/mrf_endpoint/test_daily_png/default/EPSG4326_16km/
+mkdir -p /build/test/ci_tests/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_legacy_subdaily_jpg*.config /build/test/ci_tests/mrf_endpoint/test_legacy_subdaily_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/ci_tests/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_nonyear_jpg*.config /build/test/ci_tests/mrf_endpoint/test_nonyear_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/ci_tests/mrf_endpoint/test_static_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_static_jpg*.config /build/test/ci_tests/mrf_endpoint/test_static_jpg/default/EPSG4326_16km/
+mkdir -p /build/test/ci_tests/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km
+cp layer_configs/test_mod_mrf_weekly_jpg*.config /build/test/ci_tests/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/
 
 # GIBS sample configs
 

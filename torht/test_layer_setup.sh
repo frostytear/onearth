@@ -13,15 +13,15 @@ setup_date_server() {
 
     # # Copy config stuff
     # cp oe2_test_date_service.conf /etc/httpd/conf.d
-    # mkdir -p /build/test/mod_mrf_test_data/date_service
-    # cp date_service.lua /build/test/mod_mrf_test_data/date_service/date_service.lua
+    # mkdir -p /build/test/ci_tests/date_service
+    # cp date_service.lua /build/test/ci_tests/date_service/date_service.lua
 }
 
 setup_mod_mrf_static() {
-    mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms
-    cp test_imagery/static_test* /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
+    mkdir -p /build/test/ci_tests/mrf_endpoint/static_test/default/tms
+    cp test_imagery/static_test* /build/test/ci_tests/mrf_endpoint/static_test/default/tms/
     cp oe2_test_mod_mrf_static.conf /etc/httpd/conf.d
-    cp oe2_test_mod_mrf_static_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/static_test/default/tms/
+    cp oe2_test_mod_mrf_static_layer.config /build/test/ci_tests/mrf_endpoint/static_test/default/tms/
     /usr/sbin/httpd -k restart
     sleep 2
 
@@ -35,10 +35,10 @@ setup_mod_mrf_static() {
 }
 
 setup_mod_mrf_date() {
-    mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
-    cp test_imagery/date_test* /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms
+    mkdir -p /build/test/ci_tests/mrf_endpoint/date_test/default/tms
+    cp test_imagery/date_test* /build/test/ci_tests/mrf_endpoint/date_test/default/tms
     cp oe2_test_mod_mrf_date.conf /etc/httpd/conf.d
-    cp oe2_test_mod_mrf_date_layer.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test/default/tms/
+    cp oe2_test_mod_mrf_date_layer.config /build/test/ci_tests/mrf_endpoint/date_test/default/tms/
     /usr/sbin/httpd -k restart
     sleep 2
 
@@ -53,12 +53,12 @@ setup_mod_mrf_date() {
 }
 
 setup_mod_mrf_date_year_dir() {
-    mkdir -p /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/{2015,2016,2017}
-    cp test_imagery/date_test1420070400* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2015
-    cp test_imagery/date_test1451606400* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2016
-    cp test_imagery/date_test1483228800* /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/2017
+    mkdir -p /build/test/ci_tests/mrf_endpoint/date_test_year_dir/default/tms/{2015,2016,2017}
+    cp test_imagery/date_test1420070400* /build/test/ci_tests/mrf_endpoint/date_test_year_dir/default/tms/2015
+    cp test_imagery/date_test1451606400* /build/test/ci_tests/mrf_endpoint/date_test_year_dir/default/tms/2016
+    cp test_imagery/date_test1483228800* /build/test/ci_tests/mrf_endpoint/date_test_year_dir/default/tms/2017
     cp oe2_test_mod_mrf_date_year_dir.conf /etc/httpd/conf.d
-    cp oe2_test_mod_mrf_date_year_dir.config /build/test/mod_mrf_test_data/mrf_endpoint/date_test_year_dir/default/tms/
+    cp oe2_test_mod_mrf_date_year_dir.config /build/test/ci_tests/mrf_endpoint/date_test_year_dir/default/tms/
     /usr/sbin/httpd -k restart
     sleep 2
 
@@ -73,10 +73,10 @@ setup_mod_mrf_date_year_dir() {
 }
 
 setup_mod_reproject_date() {
-    mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms
+    mkdir -p /build/test/ci_tests/reproject_endpoint/date_test/default/tms
     cp oe2_test_mod_reproject_date.conf /etc/httpd/conf.d
-    cp oe2_test_mod_reproject_layer_source*.config /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms/oe2_test_mod_reproject_date_layer_source.config
-    cp oe2_test_mod_reproject_date*.config /build/test/mod_mrf_test_data/reproject_endpoint/date_test/default/tms/
+    cp oe2_test_mod_reproject_layer_source*.config /build/test/ci_tests/reproject_endpoint/date_test/default/tms/oe2_test_mod_reproject_date_layer_source.config
+    cp oe2_test_mod_reproject_date*.config /build/test/ci_tests/reproject_endpoint/date_test/default/tms/
     /usr/sbin/httpd -k restart
     sleep 2
 
@@ -91,10 +91,10 @@ setup_mod_reproject_date() {
 }
 
 setup_mod_reproject_static() {
-    mkdir -p /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms
+    mkdir -p /build/test/ci_tests/reproject_endpoint/static_test/default/tms
     cp oe2_test_mod_reproject_static.conf /etc/httpd/conf.d
-    cp oe2_test_mod_reproject_layer_source*.config /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms/oe2_test_mod_reproject_static_layer_source.config
-    cp oe2_test_mod_reproject_static*.config /build/test/mod_mrf_test_data/reproject_endpoint/static_test/default/tms/
+    cp oe2_test_mod_reproject_layer_source*.config /build/test/ci_tests/reproject_endpoint/static_test/default/tms/oe2_test_mod_reproject_static_layer_source.config
+    cp oe2_test_mod_reproject_static*.config /build/test/ci_tests/reproject_endpoint/static_test/default/tms/
     /usr/sbin/httpd -k restart
     sleep 2
 
