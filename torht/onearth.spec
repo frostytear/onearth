@@ -37,6 +37,9 @@ Requires:   libxml2
 Requires:   mod_ssl
 #Requires:   turbojpeg
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> -Additional changes for CI test configuration
 BuildRequires:	agg
 BuildRequires:	agg-devel
 BuildRequires:	pyparsing
@@ -47,6 +50,7 @@ BuildRequires:	python-pypng
 BuildRequires:	python-lxml
 BuildRequires:	python-nose
 BuildRequires:   python-unittest2
+<<<<<<< HEAD
 =======
 Requires:	libpng-devel
 Requires:	agg
@@ -61,6 +65,8 @@ Requires:	python-lxml
 Requires:	python-nose
 Requires:   python-unittest2
 >>>>>>> Updating the configuration files for CI test
+=======
+>>>>>>> -Additional changes for CI test configuration
 Provides:	python-matplotlib = 1.5.1
 Obsoletes:	python-matplotlib < 1.5.1
 
