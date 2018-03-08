@@ -36,6 +36,7 @@ Requires:	httpd
 Requires:   libxml2
 Requires:   mod_ssl
 #Requires:   turbojpeg
+<<<<<<< HEAD
 BuildRequires:	agg
 BuildRequires:	agg-devel
 BuildRequires:	pyparsing
@@ -46,6 +47,20 @@ BuildRequires:	python-pypng
 BuildRequires:	python-lxml
 BuildRequires:	python-nose
 BuildRequires:   python-unittest2
+=======
+Requires:	libpng-devel
+Requires:	agg
+Requires:	agg-devel
+Requires:	pyparsing
+Requires:	python-devel
+Requires:	python-tornado
+Requires:	python-pycxx-devel
+Requires:	python-dateutil
+Requires:	python-pypng
+Requires:	python-lxml
+Requires:	python-nose
+Requires:   python-unittest2
+>>>>>>> Updating the configuration files for CI test
 Provides:	python-matplotlib = 1.5.1
 Obsoletes:	python-matplotlib < 1.5.1
 
@@ -198,10 +213,14 @@ rm -rf %{buildroot}
 rm -rf %{buildroot}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %files
 =======
 #%files
 >>>>>>> -Adding configuration files for CI tests
+=======
+%files
+>>>>>>> Updating the configuration files for CI test
 #%{_libdir}/httpd/modules/*
 #%{_libdir}/httpd/modules/mod_proxy/*
 #%defattr(-,gibs,gibs,775)
@@ -214,10 +233,14 @@ rm -rf %{buildroot}
 #%{_datadir}/cgicc
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %post
 =======
 #%post
 >>>>>>> -Adding configuration files for CI tests
+=======
+%post
+>>>>>>> Updating the configuration files for CI test
 #cd %{_datadir}/cgicc/
 #%{_datadir}/cgicc/configure --prefix=%{_prefix} --libdir=%{_libdir}
 #make install
@@ -230,20 +253,28 @@ rm -rf %{buildroot}
 #done
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %postun
 =======
 #%postun
 >>>>>>> -Adding configuration files for CI tests
+=======
+%postun
+>>>>>>> Updating the configuration files for CI test
 #cd %{_libdir}/httpd/modules/
 #for file in %{_libdir}/httpd/modules/*.save; do
 #	mv "$file" "`basename "$file" .save`.so"
 #done
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %files tools
 =======
 #%files tools
 >>>>>>> -Adding configuration files for CI tests
+=======
+%files tools
+>>>>>>> Updating the configuration files for CI test
 #%defattr(755,root,root,-)
 #%{_bindir}/oe_generate_legend.py
 #%{_bindir}/oe_generate_empty_tile.py
@@ -259,19 +290,27 @@ rm -rf %{buildroot}
 #%{_datadir}/mpl
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %post tools
 =======
 #%post tools
 >>>>>>> -Adding configuration files for CI tests
+=======
+%post tools
+>>>>>>> Updating the configuration files for CI test
 #cd %{_datadir}/mpl/
 #python setup.py build
 #python setup.py install
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %files config
 =======
 #%files config
 >>>>>>> -Adding configuration files for CI tests
+=======
+%files config
+>>>>>>> Updating the configuration files for CI test
 #%defattr(664,gibs,gibs,775)
 #%{_sysconfdir}/onearth/config/
 #%config(noreplace) %{_sysconfdir}/onearth/config/conf
@@ -332,12 +371,17 @@ rm -rf %{buildroot}
 #%{_datadir}/onearth/test
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 %post test
 pip install unittest2 unittest-xml-reporting==1.14.0 requests
 =======
 #%post test
 #pip install unittest2 unittest-xml-reporting==1.14.0 requests
 >>>>>>> -Adding configuration files for CI tests
+=======
+%post test
+pip install unittest2 unittest-xml-reporting==1.14.0 requests
+>>>>>>> Updating the configuration files for CI test
 
 %changelog
 * Tue Feb 06 2018 Wei F. Yu <wei.f.yu@jpl.nasa.gov> - 1.3.1-4
