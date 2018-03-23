@@ -43,14 +43,14 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="http://localhost/onearth/test/wmts/1.0.0/WMTSCapabilities.xml">
+                    <ows:Get xlink:href="http://localhost/mrf_endpoint/1.0.0/WMTSCapabilities.xml">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>RESTful</ows:Value>
                             </ows:AllowedValues>
                         </ows:Constraint>
                     </ows:Get>
-                    <ows:Get xlink:href="http://localhost/onearth/test/wmts/wmts.cgi?">
+                    <ows:Get xlink:href="http://localhost/mrf_endpoint/wmts.cgi?">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>KVP</ows:Value>
@@ -63,14 +63,14 @@
         <ows:Operation name="GetTile">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="http://localhost/onearth/test/wmts/">
+                    <ows:Get xlink:href="http://localhost/mrf_endpoint/">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>RESTful</ows:Value>
                             </ows:AllowedValues>
                         </ows:Constraint>
                     </ows:Get>
-                    <ows:Get xlink:href="http://localhost/onearth/test/wmts/wmts.cgi?">
+                    <ows:Get xlink:href="http://localhost/mrf_endpoint/wmts.cgi?">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>KVP</ows:Value>
@@ -82,30 +82,6 @@
         </ows:Operation>
     </ows:OperationsMetadata>
     <Contents>
-      <Layer>
-         <ows:Title xml:lang="en">OnEarth MVT Tile Test</ows:Title>
-         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
-            <ows:LowerCorner>-180 -90</ows:LowerCorner>
-            <ows:UpperCorner>180 90</ows:UpperCorner>
-        </ows:WGS84BoundingBox>
-         <ows:Identifier>mvt_test</ows:Identifier>
-         <Style isDefault="true">
-             <ows:Title xml:lang="en">default</ows:Title>
-             <ows:Identifier>default</ows:Identifier>
-         </Style>
-         <Format>application/x-protobuf</Format>
-         <Dimension>
-             <ows:Identifier>time</ows:Identifier>
-             <UOM>ISO8601</UOM>
-             <Default>2012-01-01</Default>
-             <Current>false</Current>
-             <Value>2012-01-01/2012-01-01/P1D</Value>
-         </Dimension>
-         <TileMatrixSetLink>
-             <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
-         </TileMatrixSetLink>
-         <ResourceURL format="application/x-protobuf" resourceType="tile" template="http://localhost/onearth/test/wmts/mvt_test/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.pbf"/>
-      </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 1a</ows:Title>
          <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
@@ -130,7 +106,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_1a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_1a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 2a</ows:Title>
@@ -157,7 +133,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_2a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_2a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 3a</ows:Title>
@@ -183,7 +159,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_3a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_3a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 3b</ows:Title>
@@ -209,7 +185,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_3b/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_3b/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 3c</ows:Title>
@@ -235,7 +211,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_3c/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_3c/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 3d</ows:Title>
@@ -261,7 +237,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_3d/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_3d/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 4a</ows:Title>
@@ -289,7 +265,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_4a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_4a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 4b</ows:Title>
@@ -316,7 +292,33 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_4b/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_4b/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+      </Layer>
+      <Layer>
+         <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 4c</ows:Title>
+         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+            <ows:LowerCorner>-180 -90</ows:LowerCorner>
+            <ows:UpperCorner>180 90</ows:UpperCorner>
+        </ows:WGS84BoundingBox>
+         <ows:Identifier>snap_test_4c</ows:Identifier>
+         <Style isDefault="true">
+             <ows:Title xml:lang="en">default</ows:Title>
+             <ows:Identifier>default</ows:Identifier>
+             
+             
+         </Style>
+         <Format>image/jpeg</Format>
+         <Dimension>
+             <ows:Identifier>time</ows:Identifier>
+             <UOM>ISO8601</UOM>
+             <Default>2010-01-01</Default>
+             <Current>false</Current>
+             <Value>2010-01-01/2010-01-01/P385D</Value>
+         </Dimension>
+         <TileMatrixSetLink>
+             <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
+         </TileMatrixSetLink>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_4c/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 5a</ows:Title>
@@ -342,33 +344,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_5a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
-      </Layer>
-      <Layer>
-         <ows:Title xml:lang="en">OnEarth Date Snapping Scenario 6a</ows:Title>
-         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
-            <ows:LowerCorner>-180 -90</ows:LowerCorner>
-            <ows:UpperCorner>180 90</ows:UpperCorner>
-        </ows:WGS84BoundingBox>
-         <ows:Identifier>snap_test_6a</ows:Identifier>
-         <Style isDefault="true">
-             <ows:Title xml:lang="en">default</ows:Title>
-             <ows:Identifier>default</ows:Identifier>
-             
-             
-         </Style>
-         <Format>image/jpeg</Format>
-         <Dimension>
-             <ows:Identifier>time</ows:Identifier>
-             <UOM>ISO8601</UOM>
-             <Default>2012-03-11</Default>
-             <Current>false</Current>
-             <Value>2012-01-01/2012-03-11/P10D</Value>
-         </Dimension>
-         <TileMatrixSetLink>
-             <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
-         </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_6a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_5a/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">OnEarth Date Snapping Scenario Year Boundary</ows:Title>
@@ -394,7 +370,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/snap_test_year_boundary/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/snap_test_year_boundary/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">Blue Marble Demo Imagery - Daily PNG</ows:Title>
@@ -420,7 +396,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/png" resourceType="tile" template="http://localhost/onearth/test/wmts/test_daily_png/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+         <ResourceURL format="image/png" resourceType="tile" template="http://localhost/mrf_endpoint/test_daily_png/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">Blue Marble Demo Imagery - JPEG</ows:Title>
@@ -446,7 +422,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/test_legacy_subdaily_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/test_legacy_subdaily_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">Blue Marble Demo Imagery - JPEG</ows:Title>
@@ -472,7 +448,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/test_nonyear_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/test_nonyear_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">Blue Marble Demo Imagery - JPEG</ows:Title>
@@ -491,7 +467,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/test_static_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/test_static_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <Layer>
          <ows:Title xml:lang="en">Blue Marble Demo Imagery - JPEG</ows:Title>
@@ -517,33 +493,7 @@
          <TileMatrixSetLink>
              <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
          </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/test_weekly_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
-      </Layer>
-      <Layer>
-         <ows:Title xml:lang="en">Blue Marble Z-Index Test Imagery</ows:Title>
-         <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
-            <ows:LowerCorner>-180 -90</ows:LowerCorner>
-            <ows:UpperCorner>180 90</ows:UpperCorner>
-        </ows:WGS84BoundingBox>
-         <ows:Identifier>test_zindex_jpg</ows:Identifier>
-         <Style isDefault="true">
-             <ows:Title xml:lang="en">default</ows:Title>
-             <ows:Identifier>default</ows:Identifier>
-             
-             
-         </Style>
-         <Format>image/jpeg</Format>
-         <Dimension>
-             <ows:Identifier>time</ows:Identifier>
-             <UOM>ISO8601</UOM>
-             <Default>2012-02-29T16:00:00Z</Default>
-             <Current>false</Current>
-             <Value>2012-02-29T12:00:00Z/2012-02-29T16:00:00Z/P1H</Value>
-         </Dimension>
-         <TileMatrixSetLink>
-             <TileMatrixSet>EPSG4326_16km</TileMatrixSet>
-         </TileMatrixSetLink>
-         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/onearth/test/wmts/test_zindex_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+         <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost/mrf_endpoint/test_weekly_jpg/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
       </Layer>
       <TileMatrixSet>
          <ows:Identifier>EPSG4326_16km</ows:Identifier>
@@ -863,5 +813,5 @@
          </TileMatrix>
       </TileMatrixSet>
     </Contents>
-    <ServiceMetadataURL xlink:href="http://localhost/onearth/test/wmts/1.0.0/WMTSCapabilities.xml"/>
+    <ServiceMetadataURL xlink:href="http://localhost/mrf_endpoint/1.0.0/WMTSCapabilities.xml"/>
 </Capabilities>

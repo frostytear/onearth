@@ -574,7 +574,7 @@ class TestModMrf(unittest.TestCase):
             xml_check = False
         self.assertTrue(xml_check, 'GetCapabilities response is not a valid XML file. URL: ' + req_url)
 
-        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/wmts_endpoint/1.0.0/WMTSCapabilities.xml'))
+        refXMLtree = ElementTree.parse(os.path.join(os.getcwd(), 'ci_tests/mrf_endpoint/1.0.0/WMTSCapabilities.xml'))
         refXMLroot = refXMLtree.getroot()
         refXMLdict = XmlDictConfig(refXMLroot)
 
