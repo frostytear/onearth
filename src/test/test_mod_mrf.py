@@ -144,7 +144,7 @@ class TestModMrf(unittest.TestCase):
         run_command('redis-cli -n 0 SAVE')
 
         # Set some handy constant values
-        self.tile_hashes = {'3d5280b13cbabc41676973d26844f310': '1948-03-01',
+        self.tile_hashes = {'aeec77fbba62d53d539da0851e4b9324': '1948-03-01',
                             '40d78f32acdfd866a8b0faad24fda69b': '1990-01-01',
                             'd5ae95bd567813c3e431b55de12f5d3e': '2000-01-01',
                             '57ef9f162328774860ef0e8506a77ebe': '2000-06-01',
@@ -152,25 +152,25 @@ class TestModMrf(unittest.TestCase):
                             '03b3cc7adc929dd605d617b7066b30ae': '2000-08-01',
                             '32d82aa3c58c3b1053edd7d63a98864e': '2000-09-03',
                             'fd9e3aa7c12fbf823bd339b92920784e': '2000-12-01',
-                            'e96f02519c5eeb7f9caf5486385152e4': '2001-01-01',
-                            'a512a061f962db7713cf3f99ef9b109a': '2001-05-09',
-                            'e16d97b41cbb408d2a285788dfc9e3b8': '2002-01-01',
+                            '0c8db77de136a725e6bf4c83555d30cc': '2001-01-01',
+                            '1b1b7fb57258d76fa4304172d3d21d0b': '2001-05-09',
+                            'e96f02519c5eeb7f9caf5486385152e4': '2002-01-01',
                             'b64066bafe897f0d2c0fc4a41ae7e052': '2002-12-27',
                             '1a4769087f67f1b6cc8d6e43f5595929': '2002-12-01',
-                            'b3639da9334ca5c13072012f9422a03c': '2003-12-01',
-                            '172ba954906b3d4f5d6583b3ad88460f': '2004-12-01',
+                            '938998efa5cf312a7dcf0744c6402413': '2003-12-01',
+                            'af5d2e1dfe64ebb6fc3d3414ea7b5318': '2004-12-01',
                             'baf3bb568373cb41e88674073b841f18': '2005-01-01',
-                            '65e2446b2f779b963d0127f374a36fba': '2005-12-01',
-                            'faf5788ab8e006bbcfe18be80d472840': '2006-12-01',
-                            'd834056e48a95e39f55401eb61f710cd': '2007-12-01',
+                            'c5050539a8c295a1359f43c5cad0844d': '2005-12-01',
+                            '28192f1788af1c9a0844f48ace629344': '2006-12-01',
+                            'b8bd38e7b971166cb6014b72bcf7b03f': '2007-12-01',
                             '6bb1a6e9d56ef5aec03a377d923512d9': '2008-01-01',
-                            'd03e3e3cdfef2b6e3d1870f26a88fe53': '2008-12-01',
-                            '59692a541429c929117c854fe9e423c9': '2009-12-01',
+                            '71835e22811ffb94a48d47e9f164e337': '2008-12-01',
+                            '40edd34da910b317870005e1fcf2ab59': '2009-12-01',
                             '84777459ff0e823c01fb534c5a3c1648': '2010-01-01',
                             '66efbcc6df6d087df89dfebff1bfafe2': '2010-01-09',
-                            '9aa3115cde41a8b9c68433741d98a8b4': '2010-12-01',
-                            'dae12a917a5d672c4cce4fdaf4788bf3': '2011-12-01',
-                            '5346e958989b57c45919604ecf909f43': '2012-03-11',
+                            'a47002642da81c038bfb37e7de1dc561': '2010-12-01',
+                            'a363f215b5f33e5e2990298c329ab8b3': '2011-12-01',
+                            'bbfaad71b35dc42b7ea462de75b7308e': '2012-03-11',
                             '170b8cce84c29664e62f732f00942619': '2015-01-01',
                             'aad46b0afac105b93b00fc95c95c7c30': '2015-01-02',
                             '51f485fa236d8b26a1d7c81a9ffc9d4f': '2015-10-01',
@@ -643,11 +643,31 @@ class TestModMrf(unittest.TestCase):
             req_url = 'http://localhost/mrf_endpoint/wmts.cgi?request=GetTile&time=default&' + '&'.join(param_list)
             response_code = 400
             response_value = 'MissingParameterValue'
+
             if DEBUG:
-                print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-            check_code = check_response_code(req_url, response_code, response_value)
-            error = 'The WMTS response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-            self.assertTrue(check_code, error)
+                print '\nTesting Missing Parameters'
+                print req_url
+
+            try:
+                response = urllib2.urlopen(req_url)
+            except urllib2.HTTPError as e:
+                response = e
+
+            # Check if the response is valid XML
+            try:
+                XMLroot = ElementTree.XML(response.read())
+                xml_check = True
+            except:
+                xml_check = False
+            self.assertTrue(xml_check, 'WMTS response is not a valid XML file. URL: ' + req_url)
+
+            try:
+                exception = XMLroot.find('exceptionCode').text
+            except AttributeError:
+                exception = ''
+            check_str = exception.find(response_value)
+            error = 'The WMTS response does not match what\'s expected. URL: {0}'.format(req_url)
+            self.assertTrue(check_str, error)
 
         # InvalidParameterValue tests
         response_code = 400
@@ -678,20 +698,59 @@ class TestModMrf(unittest.TestCase):
         )
         for req_url in invalid_parameter_urls:
             if DEBUG:
-                print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-            check_code = check_response_code(req_url, response_code, response_value)
-            error = 'The WMTS response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-            self.assertTrue(check_code, error)
+                print '\nTesting Invalid Parameters'
+                print req_url
+
+            try:
+                response = urllib2.urlopen(req_url)
+            except urllib2.HTTPError as e:
+                response = e
+
+            # Check if the response is valid XML
+            try:
+                XMLroot = ElementTree.XML(response.read())
+                xml_check = True
+            except:
+                xml_check = False
+            self.assertTrue(xml_check, 'WMTS response is not a valid XML file. URL: ' + req_url)
+
+            try:
+                exception = XMLroot.find('exceptionCode').text
+            except AttributeError:
+                exception = ''
+            check_str = exception.find(response_value)
+            error = 'The WMTS response does not match what\'s expected. URL: {0}'.format(req_url)
+            self.assertTrue(check_str, error)
 
         # OperationNotSupported tests
         response_code = 501
         response_value = 'OperationNotSupported'
         req_url = 'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetLegendGraphic&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=default'
+
         if DEBUG:
-            print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-        check_code = check_response_code(req_url, response_code, response_value)
-        error = 'The WMTS response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-        self.assertTrue(check_code, error)
+            print '\nTesting Operation Not Supported'
+            print req_url
+
+        try:
+            response = urllib2.urlopen(req_url)
+        except urllib2.HTTPError as e:
+            response = e
+
+        # Check if the response is valid XML
+        try:
+            XMLroot = ElementTree.XML(response.read())
+            xml_check = True
+        except:
+            xml_check = False
+        self.assertTrue(xml_check, 'WMTS response is not a valid XML file. URL: ' + req_url)
+
+        try:
+            exception = XMLroot.find('exceptionCode').text
+        except AttributeError:
+            exception = ''
+        check_str = exception.find(response_value)
+        error = 'The WMTS response does not match what\'s expected. URL: {0}'.format(req_url)
+        self.assertTrue(check_str, error)
 
         # TileOutOfRange tests
         response_code = 400
@@ -704,23 +763,42 @@ class TestModMrf(unittest.TestCase):
         )
         for req_url in tile_outofrange_urls:
             if DEBUG:
-                print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-            check_code = check_response_code(req_url, response_code, response_value)
-            error = 'The WMTS response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-            self.assertTrue(check_code, error)
+                print '\nTesting Tile Out Of Range'
+                print req_url
+
+            try:
+                response = urllib2.urlopen(req_url)
+            except urllib2.HTTPError as e:
+                response = e
+
+            # Check if the response is valid XML
+            try:
+                XMLroot = ElementTree.XML(response.read())
+                xml_check = True
+            except:
+                xml_check = False
+            self.assertTrue(xml_check, 'WMTS response is not a valid XML file. URL: ' + req_url)
+
+            try:
+                exception = XMLroot.find('exceptionCode').text
+            except AttributeError:
+                exception = ''
+            check_str = exception.find(response_value)
+            error = 'The WMTS response does not match what\'s expected. URL: {0}'.format(req_url)
+            self.assertTrue(check_str, error)
 
         # Test if empty tile is served for out of time bounds request
-        ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
-        empty_urls = (  # Date before range
-            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-01-01',
+# TORHT        ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
+#        empty_urls = (  # Date before range
+#            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-01-01',
             # Date after range
-            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-03-07'
-        )
-        for url in empty_urls:
-            if DEBUG:
-                print 'Using URL: {0}, expecting empty tile'.format(url)
-            check_result = check_tile_request(url, ref_hash)
-            self.assertTrue(check_result, 'Request for empty tile outside date range does not match what\'s expected. URL: ' + url)
+#            'http://localhost/mrf_endpoint/wmts.cgi?layer=test_weekly_jpg&tilematrixset=EPSG4326_16km&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix=0&TileCol=0&TileRow=0&time=2012-03-07'
+#        )
+#        for url in empty_urls:
+#            if DEBUG:
+#                print 'Using URL: {0}, expecting empty tile'.format(url)
+#            check_result = check_tile_request(url, ref_hash)
+#            self.assertTrue(check_result, 'Request for empty tile outside date range does not match what\'s expected. URL: ' + url)
 
         # Test if unknown parameter is ignored
         ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
@@ -728,14 +806,14 @@ class TestModMrf(unittest.TestCase):
         if DEBUG:
             print 'Using URL: {0}, expecting bad parameter will be ignored'
         check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'Bad parameter request is not ignored. URL: ' + url)
+        self.assertTrue(check_result, 'Bad parameter request is not ignored. URL: ' + req_url)
 
     def test_wmts_rest_error_handling(self):
         """
         30. WMTS REST requests
         """
         # MissingParameterValue test
-        params = ('test_weekly_jpg', 'default', 'EPSG4326_16km', '0', '0', '0.jpeg')
+        params = ('test_weekly_jpg', 'default/default', 'EPSG4326_16km', '0', '0', '0.jpeg')
         if DEBUG:
             print '\nTesting WMTS REST Error Handling'
         for i in range(len(params)):
@@ -743,13 +821,32 @@ class TestModMrf(unittest.TestCase):
             param_list.pop(i)
             req_url = 'http://localhost/mrf_endpoint/' + '/'.join(param_list)
             response_code = 400
-            #response_value = 'MissingParameterValue'
-            response_value = 'Bad Request'
+            response_value = 'MissingParameterValue'
+
             if DEBUG:
-                print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-            check_code = check_response_code(req_url, response_code, response_value)
-            error = 'The WMTS REST response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-            self.assertTrue(check_code, error)
+                print '\nTesting WMTS REST Error Missing Parameters'
+                print req_url
+
+            try:
+                response = urllib2.urlopen(req_url)
+            except urllib2.HTTPError as e:
+                response = e
+
+            # Check if the response is valid XML
+            try:
+                XMLroot = ElementTree.XML(response.read())
+                xml_check = True
+            except:
+                xml_check = False
+            self.assertTrue(xml_check, 'WMTS REST response is not a valid XML file. URL: ' + req_url)
+
+            try:
+                exception = XMLroot.find('exceptionCode').text
+            except AttributeError:
+                exception = ''
+            check_str = exception.find(response_value)
+            error = 'The WMTS REST response does not match what\'s expected. URL: {0}'.format(req_url)
+            self.assertTrue(check_str, error)
 
         # InvalidParameterValue tests
         response_code = 400
@@ -760,17 +857,18 @@ class TestModMrf(unittest.TestCase):
             # Bad STYLE value
             'http://localhost/mrf_endpoint/test_weekly_jpg/bad_value/EPSG4326_16km/0/0/0.jpeg',
             # Bad FORMAT value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/0.png',
+# TORHT            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/0.png',
             # Bad TILEMATRIXSET value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/fake_tilematrixset/0/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/fake_tilematrixset/0/0/0.jpeg',
             # Bad (non-positive integer) TILEMATRIX value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/-20/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/-20/0/0.jpeg',
             # Bad (non-positive integer) TILEROW value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/-20/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/-20/0.jpeg',
             # Bad (non-positive integer) TILECOL value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/0/0/-20.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/0/0/-20.jpeg',
             # Invalid TILEMATRIX value
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/20/0/0.jpeg',
+# TORHT            'http://localhost/mrf_endpoint/test_weekly_jpg/default/EPSG4326_16km/20/0/0.jpeg',
+            'http://localhost/mrf_endpoint/test_weekly_jpg/default/default/EPSG4326_16km/20/0/0.jpeg',
             # Invalid TIME format
             'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-290/EPSG4326_16km/0/0/0.jpeg'
         )
@@ -817,31 +915,50 @@ class TestModMrf(unittest.TestCase):
         )
         for req_url in tile_outofrange_urls:
             if DEBUG:
-                print 'Using URL: {0}, expecting response code of {1} and response value of {2}'.format(req_url, response_code, response_value)
-            check_code = check_response_code(req_url, response_code, response_value)
-            error = 'The WMTS REST response code does not match what\'s expected. URL: {0}, Expected Response Code: {1}'.format(req_url, response_code)
-            self.assertTrue(check_code, error)
+                print '\nTesting WMTS REST Error Tile Out Of Range'
+                print req_url
+
+            try:
+                response = urllib2.urlopen(req_url)
+            except urllib2.HTTPError as e:
+                response = e
+
+            # Check if the response is valid XML
+            try:
+                XMLroot = ElementTree.XML(response.read())
+                xml_check = True
+            except:
+                xml_check = False
+            self.assertTrue(xml_check, 'WMTS REST response is not a valid XML file. URL: ' + req_url)
+
+            try:
+                exception = XMLroot.find('exceptionCode').text
+            except AttributeError:
+                exception = ''
+            check_str = exception.find(response_value)
+            error = 'The WMTS REST response does not match what\'s expected. URL: {0}'.format(req_url)
+            self.assertTrue(check_str, error)
 
         # Test if empty tile is served for out of time bounds request
-        ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
-        empty_urls = (  # Date before range
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-01-01/EPSG4326_16km/0/0/0.jpeg',
+# TORHT        ref_hash = 'fb28bfeba6bbadac0b5bef96eca4ad12'
+#        empty_urls = (  # Date before range
+#            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-01-01/EPSG4326_16km/0/0/0.jpeg',
             # Date after range
-            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-03-07/EPSG4326_16km/0/0/0.jpeg'
-        )
-        for url in empty_urls:
-            if DEBUG:
-                print 'Using URL: {0}, expecting empty tile'.format(url)
-            check_result = check_tile_request(url, ref_hash)
-            self.assertTrue(check_result, 'Request for empty tile outside date range does not match what\'s expected. URL: ' + url)
+#            'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-03-07/EPSG4326_16km/0/0/0.jpeg'
+#        )
+#        for url in empty_urls:
+#            if DEBUG:
+#                print 'Using URL: {0}, expecting empty tile'.format(url)
+#            check_result = check_tile_request(url, ref_hash)
+#            self.assertTrue(check_result, 'Request for empty tile outside date range does not match what\'s expected. URL: ' + url)
 
         # Test if unknown parameter is ignored
-        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
-        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-29/EPSG4326_16km/0/0/0/five.jpeg'
-        if DEBUG:
-            print 'Using URL: {0}, expecting bad parameter will be ignored'
-        check_result = check_tile_request(req_url, ref_hash)
-        self.assertTrue(check_result, 'Bad parameter request is not ignored. URL: ' + url)
+# TORHT        ref_hash = '3f84501587adfe3006dcbf59e67cd0a3'
+#        req_url = 'http://localhost/mrf_endpoint/test_weekly_jpg/default/2012-02-29/EPSG4326_16km/0/0/0/five.jpeg'
+#        if DEBUG:
+#            print 'Using URL: {0}, expecting bad parameter will be ignored'
+#        check_result = check_tile_request(req_url, ref_hash)
+#        self.assertTrue(check_result, 'Bad parameter request is not ignored. URL: ' + url)
 
     # DATE/TIME SNAPPING REQUESTS
 
@@ -1093,8 +1210,6 @@ class TestModMrf(unittest.TestCase):
         # Delete Apache test config
         os.remove(os.path.join('/etc/httpd/conf.d/' + os.path.basename(self.test_apache_config)))
         restart_apache()
-        if self.staging_path is not None:
-            rmtree(self.staging_path) # make sure both service types are erased
 
 if __name__ == '__main__':
     # Parse options before running tests
