@@ -99,7 +99,7 @@ RUN luarocks make onearth-0.1-1.rockspec
 
 # Install OnEarth utilties, etc.
 WORKDIR /home/oe2/onearth/
-RUN install -m 755 /usr/lib64/httpd/bin
+RUN install -m 755 -d /usr/lib64/httpd/bin
 #RUN install -m 755 src/modules/mod_onearth/oe_create_cache_config /usr/lib64/httpd/bin/oe_create_cache_config
 #RUN install -m 755 src/layer_config/bin/oe_configure_layer.py -D /usr/lib64/httpd/bin/oe_configure_layer
 RUN install -m 755 src/empty_tile/oe_generate_empty_tile.py -D /usr/lib64/httpd/bin/oe_generate_empty_tile.py
