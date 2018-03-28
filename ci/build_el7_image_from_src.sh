@@ -108,7 +108,7 @@ RUN install -m 755 src/generate_legend/oe_generate_legend.py -D /usr/lib64/httpd
 RUN install -m 755 src/mrfgen/mrfgen.py -D /usr/lib64/httpd/bin/mrfgen
 RUN install -m 755 src/mrfgen/colormap2vrt.py -D /usr/lib64/httpd/bin/colormap2vrt.py
 RUN install -m 755 src/mrfgen/overtiffpacker.py -D /usr/lib64/httpd/bin/overtiffpacker.py
-RUN install -m 755 src/mrfgen/RGBApng2Palpng -D /usr/lib64/httpd/bin/RGBApng2Palpng
+#RUN install -m 755 src/mrfgen/RGBApng2Palpng -D /usr/lib64/httpd/bin/RGBApng2Palpng
 RUN install -m 755 src/mrfgen/oe_validate_palette.py -D /usr/lib64/httpd/bin/oe_validate_palette.py
 RUN install -m 755 src/scripts/oe_utils.py -D /usr/lib64/httpd/bin/oe_utils.py
 #RUN install -m 755 src/scripts/oe_configure_reproject_layer.py -D /usr/lib64/httpd/bin/oe_configure_reproject_layer.py
