@@ -45,9 +45,10 @@ BuildRequires:	python-dateutil
 BuildRequires:	python-pypng
 BuildRequires:	python-lxml
 BuildRequires:	python-nose
-BuildRequires:   python-unittest2
+BuildRequires:  python-unittest2
 Provides:	python-matplotlib = 1.5.1
 Obsoletes:	python-matplotlib < 1.5.1
+BuildRequires:	python-matplotlib
 
 %description
 Installation packages for OnEarth
@@ -84,7 +85,7 @@ Requires:	python-dateutil
 Requires:	python-pypng
 Requires:	python-lxml
 Requires:	python-nose
-Requires:   python-unittest2
+Requires:       python-unittest2
 #Requires:	freetype-devel
 #Requires:	gibs-gdal > 0.9.0
 Provides:	python-matplotlib = 1.5.1
