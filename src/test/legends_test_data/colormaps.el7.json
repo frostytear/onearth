@@ -1,121 +1,121 @@
 {
     "AIRS_Dust_Score_Ocean_Day": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/AIRS_Dust_Score_Ocean_Day.xml", 
-        "png_h": "1078357816554a9939e27eb3a1ecd7f8", 
-        "png_v": "d6a4d3a2c68c9705c5ec2d0ce0e41e5f", 
-        "svg_h": "af8edcc44544316b18f3ac8ae972be2a", 
-        "svg_v": "b34a3be9958c08dd7e8b362f42c15fce"
+        "png_h": "a934472904442ef9f9dd6cb81d3e500a", 
+        "png_v": "5ef013e2e489619f2bd4f8d8bcacff4b", 
+        "svg_h": "e4f1cfbd87c41984cc212dd36c7c49fb", 
+        "svg_v": "c73f264dbc9fdf8afb587d85e1901dff"
     }, 
     "AIRS_Prata_SO2_Index_Day": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/AIRS_Prata_SO2_Index_Day.xml", 
-        "png_h": "d553c01278d297adc2ba77cdc7f25835", 
-        "png_v": "8d6e84f57518501e9752a01b1d8612ca", 
-        "svg_h": "3cebd1bbeed332725a841c9cd28177a0", 
-        "svg_v": "64d7c7e94b12c283e8e6c4080734ef74"
+        "png_h": "bfff24e60dc03023e0d63a495417a026", 
+        "png_v": "870de80c36e9f8933fb044b74a30a31c", 
+        "svg_h": "5f6d74d3a9b3bfb67d5bed6d1bf1734a", 
+        "svg_v": "760453904b79cced7af00672fdcac695"
     }, 
     "AMSR2_Cloud_Liquid_Water_Day": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/AMSR2_Cloud_Liquid_Water_Day.xml", 
-        "png_h": "b503194a99cbafcd3f57b46a1423b72f", 
-        "png_v": "9f57168cc83815d449457f303698807f", 
-        "svg_h": "85efc268e0255665cc2db56c4cc79eda", 
-        "svg_v": "d103cf0e94ebc3bc37542d1db0708041"
+        "png_h": "21c00e17d0ef387511635faa8245402a", 
+        "png_v": "8fa846a3536a09402f225ddfdcb4cad3", 
+        "svg_h": "1c0a028aae5206ae2204c56881c29473", 
+        "svg_v": "2aa12d92e75f7e4dfd327b690102336f"
     }, 
     "AMSR2_Sea_Ice_Concentration_25km": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/AMSR2_Sea_Ice_Concentration_25km.xml", 
-        "png_h": "2fe9ed0888fc6c50a4b027b6ae293b69", 
-        "png_v": "4990e5167f36624a6acdab9f46ee06c1", 
-        "svg_h": "fa76dca5926b74e18e57d43e47502f67", 
-        "svg_v": "795416347f603c5df3ae73a960124947"
+        "png_h": "0326af8da200acd1ce790f502ad39a79", 
+        "png_v": "19ae53468843020d05372d97cc084568", 
+        "svg_h": "9bc1c859268acc5beb2f4ac17ca1a68e", 
+        "svg_v": "4acafe39031908a65a0bcc65c943b070"
     }, 
     "AMSRE_Snow_Depth_Over_Ice": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/AMSRE_Snow_Depth_Over_Ice.xml", 
-        "png_h": "4961cb030d70dcdbd17bfa843f4ab98a", 
-        "png_v": "3199de3c9c61f71bf0a7c7b970f63dbd", 
-        "svg_h": "1f82bebc1aa579fa9c1632e7ba248964", 
-        "svg_v": "baceb52f04d53d0aa07d4f33b1b8691c"
+        "png_h": "ee8e4e962fedaefdb89819f88359105f", 
+        "png_v": "44641c7120bc2302b05f5e9c8dad518f", 
+        "svg_h": "cd28f770eed45995dfa5b92085f6c852", 
+        "svg_v": "70ddd7037253d56acc7bf65b8c120e7c"
     }, 
     "CERES_EBAF_TOA_Incoming_Solar_Flux_Monthly": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/CERES_EBAF_TOA_Incoming_Solar_Flux_Monthly.xml", 
-        "png_h": "271661f53d037ecbf0491be43370a1e8", 
-        "png_v": "71360c07fd989cea527b061e3a51ac98", 
-        "svg_h": "737914429a581df2578c86feaadf90cc", 
-        "svg_v": "b06ccdfa9912cf6a847c34edb4845250"
+        "png_h": "619d76093ea4e97405b62842d5f56d7f", 
+        "png_v": "79af5453117c26679750261913358339", 
+        "svg_h": "1db49d2ba167b4e967c48c9d576164ff", 
+        "svg_v": "cf01780b623479562a26af423079cf67"
     }, 
     "MEaSUREs_Daily_Landscape_Freeze_Thaw_AMSRE.xml": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MEaSUREs_Daily_Landscape_Freeze_Thaw_AMSRE.xml", 
-        "png_h": "c843c0d32cdbf9f5d61ede5193df9a99", 
-        "png_v": "98e9f43fba0d6a6c68fdd05d849aeece", 
-        "svg_h": "0e2519676f688cccb4cc329fc3059306", 
-        "svg_v": "15d83265b3e90231ca2992e7b70f1154"
+        "png_h": "78dbb3945f0eade1a644bb6563ca164c", 
+        "png_v": "2c47965bce34c8859a7fa571388c4746", 
+        "svg_h": "2f38aab16816df65c1f5b7127e42c17d", 
+        "svg_v": "a8b9734e0bc70375fe4cb347ad85bf02"
     }, 
     "MODIS_Aqua_Cloud_Effective_Radius_PCL": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Cloud_Effective_Radius_PCL.xml", 
-        "png_h": "5aa5a27563ced196b859dc8aaac6a6de", 
-        "png_v": "4e5b62b0fd3f8fdf17d1fd1111876bc7", 
-        "svg_h": "0d8e5015bf1062c5886a216a78e6fedc", 
-        "svg_v": "44ea5406f72444781c289ca54dda6ba6"
+        "png_h": "7b51d982eda8708557dd966b50052992", 
+        "png_v": "b582abafb4281d4e31063b3db887f8a3", 
+        "svg_h": "42ac0e61796aada22fbad1168cac97d8", 
+        "svg_v": "fd5d5ad018a4bfe97f2b7a6b1feb9346"
     }, 
     "MODIS_Aqua_Cloud_Phase_Infrared_Day": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Cloud_Phase_Infrared_Day.xml", 
-        "png_h": "91172fd9f5576794d5fff4bdd7f5ff0d", 
-        "png_v": "b30b006e1950c5cc436790ea2ebc91af", 
-        "svg_h": "729abab49c732654416e1159d4766958", 
-        "svg_v": "5747d485d8da97a357ee65e0086e4d5e"
+        "png_h": "7d35d6358fea64a59b714b631c80ec68", 
+        "png_v": "33b93fd78b224fd9781de5c559d88b2a", 
+        "svg_h": "8dc1b65852aa5d8f9be70bcd5c43474e", 
+        "svg_v": "7e5b56ffd2c57ea552d935ae0e0dce6e"
     }, 
     "MODIS_Aqua_Cloud_Water_Path": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Cloud_Water_Path.xml", 
-        "png_h": "ba0715d3b0ad27905531d990c1c7cd3e", 
-        "png_v": "cfb4b5a15988d6db28baafe900ac4887", 
-        "svg_h": "c24c7bd768f7488e6f6711bc0b5193d5", 
-        "svg_v": "8ece388ff05f90a2c34dd0ce581a9577"
+        "png_h": "0e073f27ebbde6a4c31da97179e4d83f", 
+        "png_v": "29e0a4a2ef7d173cd06b266acc59f049", 
+        "svg_h": "3ec8b9c0545f32da44ea827c164d983c", 
+        "svg_v": "c12953e66c296b483817756517926ca4"
     }, 
     "MODIS_Aqua_Data_No_Data": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Data_No_Data.xml", 
-        "png_h": "ac2622d6d3487f17a1c97242ac2cf5ae", 
-        "png_v": "ed18e0f64053f5d0491f347cf926ac0b", 
-        "svg_h": "a5b8816d605ecb2cd72cd10788878334", 
-        "svg_v": "ec50f00c7ba9b7b3ec832918c2d06b23"
+        "png_h": "4482bcead052644b2746cba4954e2b1a", 
+        "png_v": "cec566a372ab3d8c480adb45afe069b3", 
+        "svg_h": "af536737fda1bd51bc30073a540959ee", 
+        "svg_v": "a8cb495b0ec5117723d95a9b1ce9e6cd"
     }, 
-    "MODIS_Aqua_Sea_Ice_v6": {
-        "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Sea_Ice_v6.xml", 
-        "png_h": "4ce602922978a387e5e9e48e896d00bf", 
-        "png_v": "7a94170eb6cfd20b287f377e0db44ef9", 
-        "svg_h": "0580934b7274d003441bb406e988acf1", 
-        "svg_v": "54340dbe4ea7b1366fca285d86f0edef"
+    "MODIS_Aqua_Sea_Ice": {
+        "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Aqua_Sea_Ice.xml", 
+        "png_h": "e2d00ab934e03b6159f6a629288f1566", 
+        "png_v": "6ce8e113fe89db1ca03c4ad9fb469c24", 
+        "svg_h": "8c5732bc189fab0130c7ceb03baa7505", 
+        "svg_v": "2f666a9c527d67ba141e7ad3d24a3e40"
     }, 
-    "MODIS_Combined_Value_Added_AOD_v6.xml": {
-        "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Combined_Value_Added_AOD_v6.xml", 
-        "png_h": "6414d7646c52cc8b3f5ba8141a318a76", 
-        "png_v": "8c5a5b87e593645a5811b28bd08f6b59", 
-        "svg_h": "56d395f67f0edb0b4b70a4644b114a5c", 
-        "svg_v": "912930964883f687368659ee04db66f0"
+    "MODIS_Combined_Value_Added_AOD.xml": {
+        "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Combined_Value_Added_AOD.xml", 
+        "png_h": "eb3a33dde84fd9206510222085cd3ba5", 
+        "png_v": "83fbc1007cf268a03a1abd2f51c11073", 
+        "svg_h": "df1345520c36300e8885868990707f43", 
+        "svg_v": "32e33f17147df3bd0d988322d3564794"
     }, 
     "MODIS_Water_Mask": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MODIS_Water_Mask.xml", 
-        "png_h": "d2ef7e72dd7de6b0bdfb333945501ecd", 
-        "png_v": "08e9fdd9955e132b758d7ba76387de02", 
-        "svg_h": "80800f407967c2d36ec0af84036eb392", 
-        "svg_v": "d5e879f9a63a59194873594454105b97"
+        "png_h": "3ce07996d6740e0277a6e98aa9e5ac7d", 
+        "png_v": "7d8ac400d4725da9e793aa63c6ed3f58", 
+        "svg_h": "6bd18a17b7ecb79267ad636a7b636806", 
+        "svg_v": "66fc4572dcc9f92364e353889d519a8e"
     }, 
     "MOPITT_CO_Daily_Surface_Mixing_Ratio_Day": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/MOPITT_CO_Daily_Surface_Mixing_Ratio_Day.xml", 
-        "png_h": "76476a39b3ef90b4d5877c404853f2de", 
-        "png_v": "5c86d6c199af7e58a442d42ce26aa56b", 
-        "svg_h": "2690ae006d391ed4058686ab9b7e5827", 
-        "svg_v": "bc1f0feee709c663b4f1099c7e9f145a"
+        "png_h": "0910fc6a0b0d5648795ee1d62f09fc9d", 
+        "png_v": "02229a1d705888a345ecd581437c3de9", 
+        "svg_h": "4688b81371315e4fd5fc97323b078fa3", 
+        "svg_v": "8621170303fdec97a29255e509f8a348"
     }, 
     "SMAP_L1_Passive_Brightness_Temp_Fore_H_RFI": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/SMAP_L1_Passive_Brightness_Temp_Fore_H_RFI.xml", 
-        "png_h": "6c2550a5c51906794e20d3068b7bf7bc", 
-        "png_v": "ba49a874fb06c86e0b69114fad2ce959", 
-        "svg_h": "c7e0dfa2ecfabfef41969378cd238b79", 
-        "svg_v": "bbda8c307ccb8cb204351e8b080161c2"
+        "png_h": "4822c264f58786523c7fe7d3c8c77223", 
+        "png_v": "fd4d99b3a6979b9fb88c3d676a0a32e6", 
+        "svg_h": "67a29bccd9729b8fdef1072bf46e1a0d", 
+        "svg_v": "53231796e2d88d11c9fd0fa6ead5eef2"
     }, 
     "SMAP_L4_Uncertainty_Mean_Net_Ecosystem_Exchange": {
         "colormap": "https://gibs.earthdata.nasa.gov/colormaps/v1.3/SMAP_L4_Uncertainty_Mean_Net_Ecosystem_Exchange.xml", 
-        "png_h": "2508a68db677badebe57d5f715668031", 
-        "png_v": "bb0c4b5a84dd65cc5e613d91503ab3af", 
-        "svg_h": "94cbc98540c126cca79c7c24161f78de", 
-        "svg_v": "fd6f25e372431f5cd1e71d7f02c984ed"
+        "png_h": "65b7be5b45e2f599094c9b8f3fd66aeb", 
+        "png_v": "9ec361efccea9e06bfa10723bae668d3", 
+        "svg_h": "9eaccf6c3a8edf9d77dadd543ea99d43", 
+        "svg_v": "0fe6dcedf548752f9c9328b585abe70b"
     }
 }
